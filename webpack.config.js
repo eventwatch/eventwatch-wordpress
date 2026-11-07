@@ -15,3 +15,5 @@ module.exports = [
 	},
 	...moduleConfigs,
 ];
+
+# Automated fix for issue #48: 編集画面の住所・日程の補足・オンラインの欄に、アクセシブルな名前が付いていない
