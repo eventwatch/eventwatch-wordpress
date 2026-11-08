@@ -1629,4 +1629,16 @@ class Event_Import_Test extends WP_UnitTestCase {
 		Import_Admin::add_page();
 		$this->assertSame( Import_Admin::PAGE, $submenu[ $parent ][0][2] );
 	}
+
+	/**
+	 * 取り込みのボタンの枠は、本体が狭い幅で表の上の操作を隠す指定（.tablenav.top .actions）より強いセレクタで出す。
+	 */
+	public function test_import_actions_stay_visible_over_core_narrow_rule() {
+		wp_styles()->add_data( 'wp-admin', 'after', array() );
+		Import_Admin::enqueue( Post_Type::POST_TYPE . '_page_' . Import_Admin::PAGE );
+		$inline = implode( '', (array) wp_styles()->get_data( 'wp-admin', 'after' ) );
+		wp_styles()->add_data( 'wp-admin', 'after', array() );
+
+		$this->assertStringContainsString( '.tablenav.top .actions.eventwatch-import__actions{display:flex', $inline );
+	}
 }
