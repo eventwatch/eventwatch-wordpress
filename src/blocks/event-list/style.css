@@ -2,9 +2,9 @@
  * 値はテーマの preset を参照し、色・書体・余白をここで決めない。
  * テーマに無い preset は currentColor や本文の大きさに落とす。
  * 文字はその場の色を受け継ぐので、地を塗らない。テーマの地を塗ると、暗い地に白い文字のグループの中で白地に白になる。
+ * accent は文字にも塗りにも使わない。Twenty Twenty-Four の accent は飾り用の淡い色で、地の上で読めない。
  */
 .wp-block-eventwatch-event-list {
-	--eventwatch-accent: var(--wp--preset--color--accent, currentcolor);
 	--eventwatch-contrast: currentcolor;
 	--eventwatch-muted: var(--wp--preset--color--contrast-2, currentcolor);
 	--eventwatch-border: var(--wp--preset--color--contrast-3, currentcolor);
@@ -45,7 +45,7 @@
 }
 
 /*
- * オーナーやテーマのスタイルがブロックかその外側に色を付けたら、テーマの弱い色と accent を重ねない。
+ * オーナーやテーマのスタイルがブロックかその外側に色を付けたら、テーマの弱い色を重ねない。
  * セクションのスタイルは has-background を付けず is-style-* だけを付ける。
  */
 .wp-block-eventwatch-event-list.has-text-color,
@@ -56,7 +56,6 @@
 .wp-block-group[class*="is-style-"] .wp-block-eventwatch-event-list,
 .wp-block-columns[class*="is-style-"] .wp-block-eventwatch-event-list,
 .wp-block-column[class*="is-style-"] .wp-block-eventwatch-event-list {
-	--eventwatch-accent: currentcolor;
 	--eventwatch-muted: currentcolor;
 	--eventwatch-border: currentcolor;
 	--eventwatch-line: color-mix(in srgb, currentcolor 30%, transparent);
@@ -100,7 +99,8 @@
 	font-size: min(var(--wp--preset--font-size--large, 1.25em), 1.5em);
 	font-weight: 700;
 	line-height: 1.45;
-	color: var(--eventwatch-accent);
+	/* 見出しの要素なので、テーマの見出しの色ではなくカードの文字色を受け継がせる。 */
+	color: inherit;
 	text-decoration: underline;
 	text-decoration-thickness: 1px;
 	text-underline-offset: 0.25em;
