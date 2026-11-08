@@ -941,6 +941,33 @@ class Event_Import_Test extends WP_UnitTestCase {
 	}
 
 	/**
+	 * 結び直しに失敗しても、続けて送り直すと結び直す。
+	 */
+	public function test_failed_relink_of_imported_post_is_retried() {
+		$post_id = $this->import( $this->event() )['postId'];
+
+		$this->link_answer = $this->http( 503 );
+		$first             = $this->import(
+			$this->event(
+				array(
+					'externalSiteId' => Site_Identity::id(),
+					'externalId'     => (string) $post_id,
+					'detachedAt'     => '2030-01-01T00:00:00.000+0000',
+				)
+			)
+		);
+		$this->assertSame( 'failed', $first['status'] );
+
+		$this->link_answer = null;
+		$this->api         = array();
+		$second            = Event_Import::run( self::ID );
+
+		$this->assertSame( 'imported', $second['status'] );
+		$this->assertSame( $post_id, $second['postId'] );
+		$this->assertSame( 1, $this->sent( '/link' ) );
+	}
+
+	/**
 	 * 別のサイトの切り離し中の投稿は新しく作る。
 	 */
 	public function test_other_site_detached_post_creates_new() {
