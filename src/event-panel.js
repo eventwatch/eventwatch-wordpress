@@ -39,6 +39,7 @@ import {
 	PLUGIN_NAME,
 	SYNC_BLOCKS_EVENT,
 } from './panel-names';
+import findField from './find-field';
 import useOpenPanelOnce from './use-open-panel-once';
 
 export { PLUGIN_NAME };
@@ -392,7 +393,7 @@ const EventFields = ( {
 	// パネルの中身は Slot が遅れて描くので、新しい組の要素を待てるこの中で動かす。
 	useEffect( () => {
 		if ( focusTarget ) {
-			document.getElementById( focusTarget )?.focus();
+			findField( focusTarget )?.focus();
 			clearFocusTarget();
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps -- 毎回作る clearFocusTarget では動かさない。
@@ -477,7 +478,7 @@ const EventFields = ( {
 			/>
 			<TextareaControl
 				__nextHasNoMarginBottom
-				id="eventwatch-field-venue-address"
+				data-eventwatch-field="eventwatch-field-venue-address"
 				className={
 					addressMissing || addressRejected
 						? 'eventwatch-control--error'
@@ -508,7 +509,6 @@ const EventFields = ( {
 			/>
 			<ToggleControl
 				__nextHasNoMarginBottom
-				id="eventwatch-field-online"
 				label={ __( 'Held online', 'eventwatch' ) }
 				help={ __(
 					'When on, “Online” is shown instead of the venue name.',
@@ -584,7 +584,7 @@ const EventFields = ( {
 			/>
 			<TextareaControl
 				__nextHasNoMarginBottom
-				id="eventwatch-field-schedule-note"
+				data-eventwatch-field="eventwatch-field-schedule-note"
 				className={
 					noteRejected ? 'eventwatch-control--error' : undefined
 				}
@@ -672,4 +672,6 @@ const EventPanel = () => {
 	return postType === POST_TYPE ? <EventPanelContent /> : null;
 };
 
+// 欄の名前と移動をテストで描いて確かめるため、パネルの外側の無い形でも書き出す。
+export { EventFields };
 export default EventPanel;
