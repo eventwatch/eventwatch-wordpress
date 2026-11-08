@@ -672,4 +672,6 @@ const EventPanel = () => {
 	return postType === POST_TYPE ? <EventPanelContent /> : null;
 };
 
+// 欄の名前と移動をテストで描いて確かめるため、パネルの外側の無い形でも書き出す。
+export { EventFields };
 export default EventPanel;
