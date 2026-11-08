@@ -18,7 +18,7 @@ You can use the plugin without an EventWatch account. To connect your site to Ev
 
 = Showing events on your site =
 
-Add the Event List block to any page. Choose cards or a list, the number of events per page, the order, and filters by category, tag, prefecture, and dates. The block follows your theme's colors and fonts, and you can change them in the block settings. Only published events that have not ended are listed. Events with no dates and password-protected events are not listed. The order and the date filter use the range from an event's first date to its last date.
+Add the Event List block to any page. Choose cards or a list, the number of events per page, the order, and filters by category, tag, prefecture, and dates. The block follows your theme's colors and fonts, and you can change them in the block settings. Only published events that have not ended are listed. Events with no dates and password-protected events are not listed. Events are ordered by the date shown on their card: the next date that has not ended, or, when you filter by dates, the first date within them. With a date filter, an event is listed only if one of its dates falls within it.
 
 Classic themes can use the same list with a shortcode:
 

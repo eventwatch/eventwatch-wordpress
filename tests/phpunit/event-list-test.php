@@ -181,6 +181,97 @@ class Event_List_Test extends WP_UnitTestCase {
 	}
 
 	/**
+	 * 過ぎた回を持つ定期のイベント。過ぎた回・7 日後・14 日後・21 日後。
+	 *
+	 * @param string $title イベント名。
+	 * @return int
+	 */
+	private function series_with_a_past_date( $title ) {
+		return $this->event(
+			$title,
+			array_map(
+				function ( $modify ) {
+					return array(
+						'start' => $this->wall( $modify ),
+						'end'   => '',
+					);
+				},
+				array( '-6 days', '+7 days', '+14 days', '+21 days' )
+			)
+		);
+	}
+
+	/**
+	 * 期間の指定が無くても、並びはカードに出す回（これから開催する最初の回）の開始で決まる。過ぎた回では決まらない。
+	 */
+	public function test_order_uses_the_shown_occurrence_not_a_past_one() {
+		$this->series_with_a_past_date( 'series' );
+		$this->event( 'tomorrow', $this->future( '+1 day' ) );
+		$this->event( 'in two days', $this->future( '+2 days' ) );
+
+		$this->assertSame( array( 'tomorrow', 'in two days', 'series' ), $this->titles() );
+		$this->assertSame( array( 'series', 'in two days', 'tomorrow' ), $this->titles( array( 'order' => 'desc' ) ) );
+	}
+
+	/**
+	 * ページ送りをまたいでも並びが崩れない。属性は「開催予定と終了したイベント」のパターンの開催予定と同じ（期間なし・1 ページ 2 件）。
+	 */
+	public function test_order_with_a_past_date_holds_across_pages() {
+		$this->series_with_a_past_date( 'series' );
+		$this->event( 'tomorrow', $this->future( '+1 day' ) );
+		$this->event( 'in two days', $this->future( '+2 days' ) );
+
+		$this->assertSame( array( 'tomorrow', 'in two days' ), $this->titles( array( 'perPage' => 2 ) ) );
+		$this->assertSame( array( 'series' ), $this->titles( array( 'perPage' => 2 ), 2 ) );
+	}
+
+	/**
+	 * 始まりだけを指定すると、始まりより後の最初の回で並ぶ。ショートコードの from でも同じ。
+	 */
+	public function test_order_with_only_a_start_date_uses_the_first_occurrence_after_it() {
+		$this->series_with_a_past_date( 'Weekly series' );
+		$this->event( 'Single show', $this->future( '+18 days' ) );
+		$from = $this->now->modify( '+15 days' )->format( 'Y-m-d' );
+
+		$this->assertSame( array( 'Single show', 'Weekly series' ), $this->titles( array( 'dateFrom' => $from ) ) );
+
+		$html = do_shortcode( '[eventwatch_events from="' . $from . '"]' );
+		$this->assertStringContainsString( 'datetime="' . $this->now->modify( '+21 days' )->format( 'Y-m-d' ), $html );
+		$this->assertLessThan( strpos( $html, 'Weekly series' ), strpos( $html, 'Single show' ) );
+	}
+
+	/**
+	 * 固定の期間でも、期間に入る回の無いイベントは出さない。最初の開始と最後の終了の間に期間があるだけでは当たらない。
+	 */
+	public function test_fixed_period_skips_events_with_no_date_inside_it() {
+		$today = new \DateTimeImmutable( 'today', wp_timezone() );
+		$this->event(
+			'around the period',
+			array(
+				array(
+					'start' => $today->modify( '+5 days' )->format( 'Y-m-d' ) . ' 10:00',
+					'end'   => '',
+				),
+				array(
+					'start' => $today->modify( '+40 days' )->format( 'Y-m-d' ) . ' 10:00',
+					'end'   => '',
+				),
+			)
+		);
+		$this->event( 'inside', $this->future( '+12 days' ) );
+
+		$this->assertSame(
+			array( 'inside' ),
+			$this->titles(
+				array(
+					'dateFrom' => $today->modify( '+10 days' )->format( 'Y-m-d' ),
+					'dateTo'   => $today->modify( '+20 days' )->format( 'Y-m-d' ),
+				)
+			)
+		);
+	}
+
+	/**
 	 * カテゴリ・タグ・都道府県で絞れる。
 	 */
 	public function test_filters_by_terms_and_prefecture() {

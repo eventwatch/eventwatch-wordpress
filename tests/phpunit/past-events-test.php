@@ -531,7 +531,7 @@ class Past_Events_Test extends WP_UnitTestCase {
 	}
 
 	/**
-	 * 動く期間は組の単位で見る。組と組の間に入るだけのイベントは出さない。
+	 * 期間は組の単位で見る。組と組の間に入るだけのイベントは出さない。
 	 */
 	public function test_period_skips_events_with_no_date_in_the_period() {
 		$rows = static function ( array $starts ) {
@@ -554,8 +554,8 @@ class Past_Events_Test extends WP_UnitTestCase {
 		$this->assertNotContains( 'between', $this->upcoming( array( 'period' => 'thisMonth' ) ) );
 		$this->assertNotContains( 'ended this period', $this->upcoming( array( 'period' => 'thisMonth' ) ) );
 
-		// 固定の日付は、これまでどおり範囲で比べる。
-		$this->assertContains(
+		// 固定の日付も組の単位で見る。
+		$this->assertNotContains(
 			'between',
 			$this->upcoming(
 				array(
