@@ -22,6 +22,8 @@ describe( 'ブロックの CSS の色', () => {
 
 	// accent はテーマによって飾り用の淡い色（Twenty Twenty-Four は #cfcabe）で、文字にも塗りにも使えない。
 	it.each( stylesheets )( '%s は preset の accent を参照しない', ( file ) => {
-		expect( readFileSync( file, 'utf8' ) ).not.toMatch( /--wp--preset--color--accent/ );
+		expect( readFileSync( file, 'utf8' ) ).not.toMatch(
+			/--wp--preset--color--accent/
+		);
 	} );
 } );
