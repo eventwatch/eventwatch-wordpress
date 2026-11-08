@@ -250,9 +250,9 @@ class Event_List {
 	/**
 	 * イベントを引く。既定は開催予定で、scope が past なら終了したものを終了の新しい順に引く。
 	 *
-	 * 配列のメタは比べられないので、判定と並べ替えは UTC の整数のメタで行う。日程の無いイベントはこのメタを持たないので出ない。
-	 * 固定の日付は最初の開始と最後の終了の範囲で比べるので、組と組の間の期間にも当たる。並びも最初の開始なので、過ぎた回があるイベントは先に並ぶ。
-	 * 動く期間は組の単位で比べ、期間に入る最初の組の順に並べる。
+	 * 配列のメタは比べられないので、SQL ではおおまかに UTC の整数のメタで絞る。日程の無いイベントはこのメタを持たないので出ない。
+	 * 開催予定は、そのうえで組の単位で比べ、カードに出す回（これから開催する最初の組。期間があれば期間に入る最初の組）の開始の順に並べる。
+	 * 最初の開始で並べると、過ぎた回を持つイベントが、出している回より前の位置に並ぶ。
 	 *
 	 * @param array $attributes normalize() を通した属性。
 	 * @param int   $page       ページ。
@@ -335,16 +335,14 @@ class Event_List {
 			}
 		}
 
-		$order   = 'desc' === $attributes['order'] ? 'DESC' : 'ASC';
+		$order = 'desc' === $attributes['order'] ? 'DESC' : 'ASC';
+		// 開催予定の並びは下の ids_in_period() が決めるので、ここでは SQL に並べさせない。
 		$orderby = $is_past
 			? array(
 				'eventwatch_ends' => 'DESC',
 				'ID'              => 'DESC',
 			)
-			: array(
-				'eventwatch_starts' => $order,
-				'ID'                => $order,
-			);
+			: 'none';
 
 		// phpcs:disable WordPress.DB.SlowDBQuery -- 判定と絞り込みはメタとタームにしか持てない。
 		$args = array(
@@ -363,11 +361,11 @@ class Event_List {
 		);
 		// phpcs:enable
 
-		if ( ! $is_past && ! empty( $attributes['period'] ) && null !== $from && null !== $to ) {
+		if ( ! $is_past ) {
 			$args['post__in'] = self::ids_in_period(
 				$args,
-				max( Event_Dates::upcoming_boundary(), $from->getTimestamp() ),
-				$to->modify( '+1 day' )->getTimestamp(),
+				max( Event_Dates::upcoming_boundary(), null !== $from ? $from->getTimestamp() : 0 ),
+				null !== $to ? $to->modify( '+1 day' )->getTimestamp() : PHP_INT_MAX,
 				$order
 			);
 			$args['orderby']  = 'post__in';
