@@ -88,8 +88,12 @@
 	box-shadow: inset 0 0 0 1px #cc1818;
 }
 
-/* select の枠は、部品が別の要素で描いている。部品の指定より強くするため、クラスを重ねる。 */
-.components-base-control.eventwatch-control--error .components-input-control__container .components-input-control__backdrop {
+/*
+ * select の枠は、部品が別の要素で描いている。部品の指定より強くするため、クラスを重ねる。
+ * 古い本体の SelectControl は className を外側の .components-base-control ではなく、内側の .components-input-base に付ける。
+ */
+.components-base-control.eventwatch-control--error .components-input-control__container .components-input-control__backdrop,
+.components-input-base.eventwatch-control--error .components-input-control__container .components-input-control__backdrop {
 	border-color: #cc1818;
 	box-shadow: inset 0 0 0 1px #cc1818;
 }
