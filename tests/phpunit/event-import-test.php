@@ -897,6 +897,50 @@ class Event_Import_Test extends WP_UnitTestCase {
 	}
 
 	/**
+	 * 取り込んで結び付いた後に切り離された投稿も、取り込み直すと結び直す。内容と状態を変えない。
+	 */
+	public function test_detached_imported_post_is_relinked() {
+		$first   = $this->import(
+			$this->event(
+				array(
+					'status'  => 'draft',
+					'visible' => false,
+				)
+			)
+		);
+		$post_id = $first['postId'];
+		wp_update_post(
+			array(
+				'ID'           => $post_id,
+				'post_content' => '切り離しの間に直した本文',
+			)
+		);
+		$fetches = $this->image_fetches;
+
+		$second = $this->import(
+			$this->event(
+				array(
+					'status'         => 'draft',
+					'visible'        => false,
+					'externalSiteId' => Site_Identity::id(),
+					'externalId'     => (string) $post_id,
+					'detachedAt'     => '2030-01-01T00:00:00.000+0000',
+				)
+			)
+		);
+
+		$this->assertSame( 'imported', $second['status'] );
+		$this->assertSame( $post_id, $second['postId'] );
+		$this->assertSame( 1, $this->sent( '/link' ) );
+		$this->assertCount( 1, $this->api );
+		$this->assertSame( 'draft', get_post_status( $post_id ) );
+		$this->assertSame( '切り離しの間に直した本文', get_post( $post_id )->post_content );
+		$this->assertSame( '1', get_post_meta( $post_id, Sync_Queue::EXISTS, true ) );
+		$this->assertSame( '', get_post_meta( $post_id, Sync_Queue::HASH, true ) );
+		$this->assertSame( $fetches, $this->image_fetches );
+	}
+
+	/**
 	 * 別のサイトの切り離し中の投稿は新しく作る。
 	 */
 	public function test_other_site_detached_post_creates_new() {

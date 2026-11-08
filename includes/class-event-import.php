@@ -279,19 +279,21 @@ class Event_Import {
 	 * @return array
 	 */
 	private static function import_one( $event_id ) {
-		$local = self::find_local( $event_id );
-		// 控えが残っている間は結び付いていない。「送らない」を切って公開すると、結び付かないまま EXISTS が立つ。
-		if ( $local && ! get_post_meta( $local, Sync_Queue::IMPORT_ORIGINAL, true ) ) {
-			return self::imported( $event_id, $local );
-		}
+		$local    = self::find_local( $event_id );
+		$snapshot = get_transient( self::snapshot_key() );
+		$event    = is_array( $snapshot ) && isset( $snapshot[ $event_id ] ) ? $snapshot[ $event_id ] : null;
 
 		// 応答を失った結び付けは一覧から消えている。下書きがあれば、内容を読まずに結び付けをやり直せる。
-		if ( $local ) {
+		// 控えが残っている間は結び付いていない。「送らない」を切って公開すると、結び付かないまま EXISTS が立つ。
+		if ( $local && get_post_meta( $local, Sync_Queue::IMPORT_ORIGINAL, true ) ) {
 			return self::link( $event_id, $local, false );
 		}
 
-		$snapshot = get_transient( self::snapshot_key() );
-		$event    = is_array( $snapshot ) && isset( $snapshot[ $event_id ] ) ? $snapshot[ $event_id ] : null;
+		if ( $local ) {
+			// 控えの無い投稿は一度結び付いている。押した時点の一覧に出ていたなら EventWatch で切り離されたので、
+			// サイトで作った投稿と同じく結び直す。出ていなければ結び付いたまま。
+			return $event ? self::link( $event_id, $local, true ) : self::imported( $event_id, $local );
+		}
 
 		if ( ! $event ) {
 			return self::failed( $event_id, '', __( 'This post can’t be imported any more. It may have been deleted or imported from another site.', 'eventwatch' ) );
@@ -519,6 +521,8 @@ class Event_Import {
 		}
 
 		$event = is_array( $result['body'] ) ? $result['body'] : array();
+		// 結び付いた投稿は一覧から消える。押した時点の一覧に残すと、同じ投稿を続けて送られたときに切り離し中と読んで結び直す。
+		self::forget_listed( $event_id );
 
 		if ( $is_own ) {
 			Sync_Queue::record_linked( $post_id, $event );
@@ -750,6 +754,19 @@ class Event_Import {
 	 */
 	private static function edit_url( $post_id ) {
 		return (string) get_edit_post_link( $post_id, 'raw' );
+	}
+
+	/**
+	 * 押した時点の一覧（prepare() が置いたもの）から 1 件を外す。
+	 *
+	 * @param string $event_id 投稿の ID。
+	 */
+	private static function forget_listed( $event_id ) {
+		$snapshot = get_transient( self::snapshot_key() );
+		if ( is_array( $snapshot ) && isset( $snapshot[ $event_id ] ) ) {
+			unset( $snapshot[ $event_id ] );
+			set_transient( self::snapshot_key(), $snapshot, self::SNAPSHOT_TTL );
+		}
 	}
 
 	/**
