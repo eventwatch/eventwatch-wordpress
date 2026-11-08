@@ -10,6 +10,7 @@ import { useCallback, useEffect, useRef, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { store as noticesStore } from '@wordpress/notices';
 
+import findField from './find-field';
 import { EVENT_PANEL_ID, SYNC_BLOCKS_EVENT } from './panel-names';
 import useOpenPanelOnce from './use-open-panel-once';
 
@@ -152,7 +153,7 @@ const SendBlocks = ( { blocks, heading, description } ) => {
 				.toggleEditorPanelOpened( EVENT_PANEL_ID );
 		}
 		window.requestAnimationFrame( () => {
-			window.setTimeout( () => document.getElementById( id )?.focus() );
+			window.setTimeout( () => findField( id )?.focus() );
 		} );
 	};
 
