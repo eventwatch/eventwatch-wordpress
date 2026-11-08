@@ -3,8 +3,8 @@
  * 欄の地を塗らない。テーマの地を塗ると、暗い地のグループの中で白地に白になる。
  */
 .wp-block-eventwatch-event-search {
-	--eventwatch-submit-bg: var(--wp--preset--color--accent, var(--wp--preset--color--contrast, canvastext));
-	--eventwatch-submit-fg: var(--wp--preset--color--accent-contrast, var(--wp--preset--color--base, canvas));
+	--eventwatch-submit-bg: var(--wp--preset--color--contrast, canvastext);
+	--eventwatch-submit-fg: var(--wp--preset--color--base, canvas);
 	--eventwatch-submit-border: transparent;
 }
 

@@ -1,10 +1,10 @@
 /*
  * 一覧と同じ考えで、値はテーマの preset を参照し、地を塗らない。
  * メニューとダイアログだけは下の文字が透けないよう、地と文字の組で塗る。
+ * 一覧と同じく、accent は文字にも塗りにも使わない。
  */
 .wp-block-eventwatch-event-field,
 .wp-block-eventwatch-event-actions {
-	--eventwatch-accent: var(--wp--preset--color--accent, currentcolor);
 	--eventwatch-muted: var(--wp--preset--color--contrast-2, currentcolor);
 	--eventwatch-line: var(--wp--preset--color--line, color-mix(in srgb, currentcolor 20%, transparent));
 	--eventwatch-radius: var(--wp--custom--radius, 0);
@@ -12,7 +12,7 @@
 	box-sizing: border-box;
 }
 
-/* オーナーやテーマのスタイルが外側に色を付けたら、テーマの弱い色と accent を重ねない。 */
+/* オーナーやテーマのスタイルが外側に色を付けたら、テーマの弱い色を重ねない。 */
 .has-text-color .wp-block-eventwatch-event-field,
 .has-background .wp-block-eventwatch-event-field,
 .wp-block-cover .wp-block-eventwatch-event-field,
@@ -21,7 +21,6 @@
 .has-background .wp-block-eventwatch-event-actions,
 .wp-block-cover .wp-block-eventwatch-event-actions,
 .wp-block-group[class*="is-style-"] .wp-block-eventwatch-event-actions {
-	--eventwatch-accent: currentcolor;
 	--eventwatch-muted: currentcolor;
 }
 
@@ -44,7 +43,7 @@
 	align-items: center;
 	gap: 6px;
 	min-height: 44px;
-	color: var(--eventwatch-accent);
+	color: inherit;
 	font-size: var(--eventwatch-small);
 	text-underline-offset: 0.25em;
 }
@@ -152,7 +151,7 @@
 	align-items: center;
 	gap: 4px;
 	min-height: 44px;
-	color: var(--eventwatch-accent);
+	color: inherit;
 	font-size: var(--eventwatch-small);
 	text-underline-offset: 0.25em;
 }
@@ -293,10 +292,10 @@
 	box-sizing: border-box;
 	min-height: 44px;
 	padding: 0 1.5rem;
-	border: 1px solid var(--wp--preset--color--accent, currentcolor);
+	border: 1px solid currentcolor;
 	border-radius: var(--eventwatch-radius);
-	background: var(--wp--preset--color--accent, transparent);
-	color: var(--wp--preset--color--accent-contrast, currentcolor);
+	background: transparent;
+	color: inherit;
 	font-weight: 700;
 	text-decoration: none;
 }
