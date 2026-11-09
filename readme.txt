@@ -95,20 +95,6 @@ By saving a key, you agree to the EventWatch Terms of Service ( https://eventwat
 
 Your site does not depend on EventWatch. Your pages and publishing keep working if EventWatch is unavailable, and visitors' browsers never connect to EventWatch for the event pages or blocks. The only link to EventWatch that visitors get is the "Open in the app" link for events listed there.
 
-= Review status =
-
-The EventWatch panel in the editor and the EventWatch column in the event list show where each event stands: not sent, waiting to send, under review, listed, changes requested, paused, withdrawn, couldn't send, or not sending. If EventWatch asks for changes, the reason appears in the panel. Fix the event and update it to send it again. The column appears only when a key is set.
-
-The plugin reads the status of events it has sent from EventWatch when you open an event in the editor, and about once an hour for up to 30 published events, oldest check first. If you have many events, a full round takes longer. These requests carry your API key, the site ID, and the event's post ID, and send no event content. Nothing is read while the site's URL change is unconfirmed. The Save button on the event page uses the status stored on your site, so a page cache can delay changes to it. A site whose URL change is unconfirmed does not show the button.
-
-= Importing from EventWatch =
-
-Administrators can bring posts your organization created on EventWatch into your site from Events › Import from EventWatch. The menu appears only when a key is set. Choose the posts to import. Each one becomes an event with its details, content, and images, which are copied to your Media Library. From then on you edit it on your site, and it can no longer be edited on EventWatch.
-
-Posts listed on EventWatch are imported as published; all others as drafts. No event content is sent back to EventWatch when you import, and saving a draft doesn't take a post out of review. A draft or a post that was sent back with requested changes is submitted for review when you publish it on your site.
-
-Importing runs one post at a time while the page is open, and stops if you close the page. If an import doesn't finish, the draft stays on your site and the page offers to try again without creating a second event.
-
 = External services =
 
 This plugin uses two outside services. It contacts neither of them until you enter an API key for that service.
@@ -129,6 +115,24 @@ Terms of use: https://eventwatch.app/en/terms . Privacy policy: https://eventwat
 
 **Links on event pages**: the links to Google Maps, OpenStreetMap, Google Calendar, X, LINE, and Facebook, and, for events listed on EventWatch, the links to EventWatch, the App Store, and Google Play, open those services only when a visitor chooses them. Nothing is sent to them before that.
 
+= Source code =
+
+The source code, including the uncompressed JavaScript for the blocks and the editor, is at https://github.com/eventwatch/eventwatch-wordpress . The `build` folder in the plugin is generated from the `src` folder there with `npm ci` and `npm run build`. The README in the repository explains how to set up a development environment.
+
+= Review status =
+
+The EventWatch panel in the editor and the EventWatch column in the event list show where each event stands: not sent, waiting to send, under review, listed, changes requested, paused, withdrawn, couldn't send, or not sending. If EventWatch asks for changes, the reason appears in the panel. Fix the event and update it to send it again. The column appears only when a key is set.
+
+The plugin reads the status of events it has sent from EventWatch when you open an event in the editor, and about once an hour for up to 30 published events, oldest check first. If you have many events, a full round takes longer. These requests carry your API key, the site ID, and the event's post ID, and send no event content. Nothing is read while the site's URL change is unconfirmed. The Save button on the event page uses the status stored on your site, so a page cache can delay changes to it. A site whose URL change is unconfirmed does not show the button.
+
+= Importing from EventWatch =
+
+Administrators can bring posts your organization created on EventWatch into your site from Events › Import from EventWatch. The menu appears only when a key is set. Choose the posts to import. Each one becomes an event with its details, content, and images, which are copied to your Media Library. From then on you edit it on your site, and it can no longer be edited on EventWatch.
+
+Posts listed on EventWatch are imported as published; all others as drafts. No event content is sent back to EventWatch when you import, and saving a draft doesn't take a post out of review. A draft or a post that was sent back with requested changes is submitted for review when you publish it on your site.
+
+Importing runs one post at a time while the page is open, and stops if you close the page. If an import doesn't finish, the draft stays on your site and the page offers to try again without creating a second event.
+
 = Scheduled events =
 
 WordPress publishes scheduled events with WP-Cron, which only runs when someone visits your site. On a site with few visitors, a scheduled event may be published later than the time you set. To publish on time, run WP-Cron from your server's cron.
@@ -136,10 +140,6 @@ WordPress publishes scheduled events with WP-Cron, which only runs when someone 
 = Removing the plugin =
 
 Deleting the plugin removes its settings, including the API key and the site ID, the send status of each event, and the capabilities it added to user roles. It also tells EventWatch to detach this site's events: they stay listed on EventWatch and you can edit them there. If EventWatch can't be reached, the plugin is still deleted; in that case, revoke the API key on EventWatch. Your events stay in the database, along with your choice not to send an event, unless you turn on "Delete all events when the plugin is deleted" in Settings > EventWatch. If you reinstall the plugin, the site gets a new site ID, so EventWatch treats it as a new site: when you publish the remaining events, they can be sent as separate posts.
-
-= Source code =
-
-The source code, including the uncompressed JavaScript for the blocks and the editor, is at https://github.com/eventwatch/eventwatch-wordpress . The `build` folder in the plugin is generated from the `src` folder there with `npm ci` and `npm run build`. The README in the repository explains how to set up a development environment.
 
 = Translations =
 
