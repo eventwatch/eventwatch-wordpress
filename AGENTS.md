@@ -28,7 +28,8 @@ PHP と Composer は wp-env のコンテナの中で動かす。先に `npm run 
 - 版の番号は本体のヘッダーの `Version`・`readme.txt` の `Stable tag`・`package.json` の `version` の 3 か所を同じ PR で上げる。CI の `tests/check-version.sh` がずれを止める
 - 公式ディレクトリのアイコン・バナー・スクリーンショット・Playground の blueprint は `.wordpress-org` に置く（zip に入らず、リリースで SVN の `assets` に配る）。スクリーンショットを足す・消すときは `readme.txt` の Screenshots の番号もそろえる。リリースと手元での blueprint の試し方は `CONTRIBUTING.md`
 - 配布物は `package.json` の `files` に書いたものだけ。実行に要るファイルを足したら、ここにも足す
-- `templates/` の `$args` はテーマが上書きで使う契約なので、キーを消す・意味を変えるときは readme も直す
+- `templates/` の `$args` はテーマが上書きで使う契約なので、キーを消す・意味を変えるときは公開のドキュメントの Override templates（`/wordpress/templates`）も直す
+- `readme.txt` は 10,000 バイト未満に保つ。操作の詳しい説明は公開のドキュメントに置き、readme には概要と開示だけを書く。版を重ねて超えそうなら、古い Changelog を公開のドキュメントの Changelog へ移す
 - 詳細のページの既定の並びは `Event_Detail::default_content()` の 1 か所。ブロックテーマのテンプレートと `templates/single-event.php` が共有する
 - cron のフックを足したら `Plugin::CRON_HOOKS` にも足す（無効化で外すため）
 - EventWatch の API は `Api_Client` を通して呼ぶ。管理画面の操作と WP-Cron からだけ呼び、サイトの表示の流れでは呼ばない。キーの平文を画面・ログ・エラーに出さない
