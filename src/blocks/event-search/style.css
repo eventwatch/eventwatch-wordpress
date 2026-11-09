@@ -165,6 +165,13 @@
 	cursor: pointer;
 }
 
+/* Twenty Twenty-One は .has-background の中の button を詳細度 0,4,1 で塗る。独自の色では塗りと文字が同じ色になる。 */
+.wp-block-eventwatch-event-search.has-background .eventwatch-search__submit:not(:hover):not(:active),
+.has-background .wp-block-eventwatch-event-search .eventwatch-search__submit:not(:hover):not(:active) {
+	background: var(--eventwatch-submit-bg);
+	color: var(--eventwatch-submit-fg);
+}
+
 .wp-block-eventwatch-event-search .eventwatch-search__clear {
 	display: inline-flex;
 	align-items: center;
