@@ -39,6 +39,8 @@ class Sync_Queue {
 	const NO_SEND  = '_eventwatch_no_send';
 
 	const PULLED_AT = '_eventwatch_sync_pulled_at';
+	// 送り直しても変わらない理由で断られた内容のハッシュと、その失敗の記録。
+	const REFUSED = '_eventwatch_sync_refused';
 
 	/**
 	 * 取り込み元の EventWatch の投稿 ID。やり直しで 2 件目を作らないために持つ。
@@ -135,7 +137,7 @@ class Sync_Queue {
 	 * @return string[]
 	 */
 	public static function meta_keys() {
-		return array( self::PENDING, self::ATTEMPTS, self::NEXT_AT, self::ERROR, self::BLOCKS, self::HASH, self::EXISTS, self::REMOTE, self::SENT_AT, self::PULLED_AT, self::IMPORT_SOURCE, self::IMPORT_IMAGES, self::IMPORT_IMAGE_SOURCE, self::IMPORT_ORIGINAL, Sync_Payload::PUBLISHED_AT_META, Sync_Image::RECORD, Sync_Image::ISSUE );
+		return array( self::PENDING, self::ATTEMPTS, self::NEXT_AT, self::ERROR, self::BLOCKS, self::HASH, self::EXISTS, self::REMOTE, self::SENT_AT, self::PULLED_AT, self::REFUSED, self::IMPORT_SOURCE, self::IMPORT_IMAGES, self::IMPORT_IMAGE_SOURCE, self::IMPORT_ORIGINAL, Sync_Payload::PUBLISHED_AT_META, Sync_Image::RECORD, Sync_Image::ISSUE );
 	}
 
 	/**
@@ -342,6 +344,7 @@ class Sync_Queue {
 	 * @return void
 	 */
 	public static function resend( $post_id ) {
+		delete_post_meta( $post_id, self::REFUSED );
 		self::mark( $post_id, false );
 		self::$marked = array( (int) $post_id );
 		self::send_marked();
@@ -735,7 +738,7 @@ class Sync_Queue {
 			// 送れない投稿のために投入量を使わないよう、止める理由を見た後で上げる。
 			$image = Sync_Image::resolve( $post_id, $can_upload );
 			if ( is_wp_error( $image ) ) {
-				return self::handle_post_error( $post_id, $token, $action, $image );
+				return self::handle_post_error( $post_id, $token, $action, $image, '' );
 			}
 			if ( $image['later'] ) {
 				return self::OUTCOME_SKIPPED;
@@ -754,6 +757,16 @@ class Sync_Queue {
 		$hash = self::content_hash( $action, $body );
 		if ( hash_equals( (string) get_post_meta( $post_id, self::HASH, true ), $hash ) && ! self::is_rejected( $post_id ) ) {
 			self::clear_pending( $post_id, $token );
+			return self::OUTCOME_SKIPPED;
+		}
+
+		// 同じ内容は同じ理由で断られる。メタボックスのある編集画面は 1 回の保存で 2 度保存するので、2 度目も送らない。
+		// 積み直しで消えた失敗の記録は書き戻し、断られたままに見せる。
+		$refused = get_post_meta( $post_id, self::REFUSED, true );
+		if ( is_array( $refused ) && isset( $refused['hash'], $refused['error'] ) && hash_equals( (string) $refused['hash'], $hash ) ) {
+			if ( delete_post_meta( $post_id, self::PENDING, $token ) ) {
+				update_post_meta( $post_id, self::ERROR, $refused['error'] );
+			}
 			return self::OUTCOME_SKIPPED;
 		}
 
@@ -778,10 +791,11 @@ class Sync_Queue {
 				Sync_Image::forget( $post_id );
 				return self::OUTCOME_SENT;
 			}
-			return self::handle_post_error( $post_id, $token, $action, $result );
+			return self::handle_post_error( $post_id, $token, $action, $result, $hash );
 		}
 
 		update_post_meta( $post_id, self::HASH, $hash );
+		delete_post_meta( $post_id, self::REFUSED );
 		update_post_meta( $post_id, self::SENT_AT, time() );
 		// 送った直後ほど審査の結果が動くので、定期の取り込みの順番を先頭へ戻す。
 		delete_post_meta( $post_id, self::PULLED_AT );
@@ -814,9 +828,10 @@ class Sync_Queue {
 	 * @param string   $token   送ったときの印の値。
 	 * @param string   $action  操作。
 	 * @param WP_Error $error   失敗。
+	 * @param string   $hash    送った内容のハッシュ。送る前の失敗は空。
 	 * @return string
 	 */
-	private static function handle_post_error( $post_id, $token, $action, WP_Error $error ) {
+	private static function handle_post_error( $post_id, $token, $action, WP_Error $error, $hash ) {
 		if ( Api_Client::is_temporary( $error ) ) {
 			$attempts = (int) get_post_meta( $post_id, self::ATTEMPTS, true ) + 1;
 			update_post_meta( $post_id, self::ATTEMPTS, $attempts );
@@ -837,11 +852,24 @@ class Sync_Queue {
 			return self::OUTCOME_SENT;
 		}
 
-		// 送り直しても変わらない。次の保存まで送らない。
+		// 送り直しても変わらない。内容が変わるか、取り込みで状態が分かるか、今すぐ送り直すまで送らない。
+		$record = self::error_record( $error );
 		delete_post_meta( $post_id, self::HASH );
 		delete_post_meta( $post_id, self::ATTEMPTS );
 		delete_post_meta( $post_id, self::NEXT_AT );
-		update_post_meta( $post_id, self::ERROR, self::error_record( $error ) );
+		update_post_meta( $post_id, self::ERROR, $record );
+		if ( '' === $hash ) {
+			delete_post_meta( $post_id, self::REFUSED );
+		} else {
+			update_post_meta(
+				$post_id,
+				self::REFUSED,
+				array(
+					'hash'  => $hash,
+					'error' => $record,
+				)
+			);
+		}
 		delete_post_meta( $post_id, self::PENDING, $token );
 
 		return self::OUTCOME_SENT;
@@ -1072,6 +1100,7 @@ class Sync_Queue {
 	 */
 	public static function clear_remote( $post_id ) {
 		delete_post_meta( $post_id, self::HASH );
+		delete_post_meta( $post_id, self::REFUSED );
 		delete_post_meta( $post_id, self::REMOTE );
 		delete_post_meta( $post_id, Event_Detail::LISTING_SLUG );
 	}

@@ -757,7 +757,7 @@ class Sync_Queue_Test extends WP_UnitTestCase {
 	}
 
 	/**
-	 * 送り直しても変わらない失敗は印を外し、理由を残す。次の保存では送る。
+	 * 送り直しても変わらない失敗は印を外し、理由を残す。同じ内容の次の保存では送らず、内容が変われば送る。
 	 *
 	 * @dataProvider final_failures
 	 *
@@ -784,10 +784,91 @@ class Sync_Queue_Test extends WP_UnitTestCase {
 		$this->assertSame( $status, $error['status'] );
 		$this->assertFalse( wp_get_scheduled_event( Sync_Queue::RUN_HOOK ) );
 
+		// メタボックスのある編集画面の 2 度目の保存と同じ形。
 		$this->requests = array();
 		wp_update_post( array( 'ID' => $id ) );
 		Sync_Queue::send_marked();
+		$this->assertCount( 0, $this->requests );
+		$this->assertSame( '', (string) get_post_meta( $id, Sync_Queue::PENDING, true ) );
+		$this->assertSame( $error, get_post_meta( $id, Sync_Queue::ERROR, true ) );
+
+		wp_update_post(
+			array(
+				'ID'         => $id,
+				'post_title' => '直した題',
+			)
+		);
+		Sync_Queue::send_marked();
 		$this->assertCount( 1, $this->requests );
+	}
+
+	/**
+	 * 断られた投稿を作る。
+	 *
+	 * @return int
+	 */
+	private function refused_event() {
+		$id                = $this->event();
+		$this->responses[] = $this->response( 409, array( 'code' => 'eventDeleted' ) );
+		wp_update_post(
+			array(
+				'ID'          => $id,
+				'post_status' => 'publish',
+			)
+		);
+		Sync_Queue::send_marked();
+		$this->requests = array();
+
+		return $id;
+	}
+
+	/**
+	 * 取り込みで状態が分かったら、断られた内容を忘れて同じ内容でも送る。
+	 */
+	public function test_refused_content_is_sent_after_clear_remote() {
+		$id = $this->refused_event();
+
+		Sync_Queue::clear_remote( $id );
+		wp_update_post( array( 'ID' => $id ) );
+		Sync_Queue::send_marked();
+
+		$this->assertCount( 1, $this->requests );
+	}
+
+	/**
+	 * 今すぐ送り直すときは、断られた内容でも送る。
+	 */
+	public function test_refused_content_is_sent_by_resend() {
+		$id = $this->refused_event();
+
+		Sync_Queue::resend( $id );
+
+		$this->assertCount( 1, $this->requests );
+	}
+
+	/**
+	 * 成功したら断られた内容を忘れる。断られた内容に戻すと送る。
+	 */
+	public function test_success_forgets_refused_content() {
+		$id = $this->refused_event();
+
+		wp_update_post(
+			array(
+				'ID'         => $id,
+				'post_title' => '直した題',
+			)
+		);
+		Sync_Queue::send_marked();
+		wp_update_post(
+			array(
+				'ID'         => $id,
+				'post_title' => '題',
+			)
+		);
+		Sync_Queue::send_marked();
+
+		$this->assertCount( 2, $this->requests );
+		$this->assertSame( '', get_post_meta( $id, Sync_Queue::REFUSED, true ) );
 	}
 
 	/**
