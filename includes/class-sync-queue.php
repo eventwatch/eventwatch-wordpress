@@ -325,7 +325,14 @@ class Sync_Queue {
 	 * @return void
 	 */
 	public static function run() {
-		self::process( self::due_targets(), self::RUN_TIMEOUT, self::RUN_MAX, self::RUN_BUDGET, true );
+		$targets = self::due_targets();
+		if ( ! $targets ) {
+			// 時刻の前に手で動かされても、動いた予定はもう外れているので、送信待ちがあれば張り直す。
+			self::schedule_next();
+			return;
+		}
+
+		self::process( $targets, self::RUN_TIMEOUT, self::RUN_MAX, self::RUN_BUDGET, true );
 	}
 
 	/**

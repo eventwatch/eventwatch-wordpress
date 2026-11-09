@@ -600,6 +600,65 @@ class Sync_Queue_Test extends WP_UnitTestCase {
 	}
 
 	/**
+	 * 送り直しの時刻の前に cron が動いても、送信待ちの投稿があれば次の cron が残る。
+	 */
+	public function test_run_before_retry_time_keeps_next_run() {
+		$id                = $this->event();
+		$this->responses[] = $this->response( 503 );
+		wp_update_post(
+			array(
+				'ID'          => $id,
+				'post_status' => 'publish',
+			)
+		);
+		Sync_Queue::send_marked();
+		$next = (int) get_post_meta( $id, Sync_Queue::NEXT_AT, true );
+		$this->assertGreaterThan( time(), $next );
+
+		// cron は動かす予定を先に外す。
+		wp_clear_scheduled_hook( Sync_Queue::RUN_HOOK );
+		$this->requests = array();
+		Sync_Queue::run();
+
+		$this->assertSame( array(), $this->requests );
+		$event = wp_get_scheduled_event( Sync_Queue::RUN_HOOK );
+		$this->assertNotFalse( $event );
+		$this->assertGreaterThanOrEqual( $next, $event->timestamp );
+	}
+
+	/**
+	 * 削除の送り直しの時刻の前に cron が動いても、次の cron が残る。
+	 */
+	public function test_run_before_delete_retry_time_keeps_next_run() {
+		$id                = $this->sent_event();
+		$this->responses[] = $this->response( 503 );
+		wp_delete_post( $id, true );
+		Sync_Queue::send_marked();
+		$next = (int) get_option( Sync_Queue::DELETE_PREFIX . $id )['next_at'];
+		$this->assertGreaterThan( time(), $next );
+
+		wp_clear_scheduled_hook( Sync_Queue::RUN_HOOK );
+		$this->requests = array();
+		Sync_Queue::run();
+
+		$this->assertSame( array(), $this->requests );
+		$event = wp_get_scheduled_event( Sync_Queue::RUN_HOOK );
+		$this->assertNotFalse( $event );
+		$this->assertGreaterThanOrEqual( $next, $event->timestamp );
+	}
+
+	/**
+	 * 送信待ちが無ければ、cron が動いても次の cron は張らない。
+	 */
+	public function test_run_without_pending_does_not_schedule() {
+		$this->assertSame( 0, Sync_Queue::pending_count() );
+
+		Sync_Queue::run();
+
+		$this->assertFalse( wp_get_scheduled_event( Sync_Queue::RUN_HOOK ) );
+	}
+
+	/**
 	 * 間隔は延び、最後の値を繰り返す。回数の上限で諦めない。
 	 */
 	public function test_backoff_grows_and_never_gives_up() {
