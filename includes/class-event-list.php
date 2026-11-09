@@ -48,6 +48,24 @@ class Event_List {
 	const THEME_DIR = 'eventwatch';
 
 	/**
+	 * この要求の中で描いた一覧の、名前の元のハッシュごとの数。
+	 *
+	 * @var array<string, int>
+	 */
+	private static $rendered = array();
+
+	/**
+	 * 描いた一覧の数え直しを始める。
+	 *
+	 * 1 回の要求を 1 ページとして数える。同じ処理の中で別のページを描く呼び出し（テスト）は、描く前に呼ぶ。
+	 *
+	 * @return void
+	 */
+	public static function reset_rendered() {
+		self::$rendered = array();
+	}
+
+	/**
 	 * 属性を検証して描画する。
 	 *
 	 * ブロックの描画の中で呼ぶ（get_block_wrapper_attributes が描画中のブロックを読むため）。ブロックの外からは render_block を通す。
@@ -67,9 +85,12 @@ class Event_List {
 			unset( $identity['dateFrom'], $identity['dateTo'] );
 		}
 		ksort( $identity );
-		$hash   = substr( md5( (string) wp_json_encode( $identity ) ), 0, 8 );
-		$param  = 'eventwatch_page_' . $hash;
-		$anchor = 'eventwatch-events-' . $hash;
+		$hash = substr( md5( (string) wp_json_encode( $identity ) ), 0, 8 );
+		// 同じ設定の一覧が 1 ページに並ぶと、id とページの引数が重なる。2 つ目からは何番目かを足す。1 つ目は足さず、共有されたリンクを効かせ続ける。
+		self::$rendered[ $hash ] = isset( self::$rendered[ $hash ] ) ? self::$rendered[ $hash ] + 1 : 1;
+		$key                     = 1 === self::$rendered[ $hash ] ? $hash : $hash . '-' . self::$rendered[ $hash ];
+		$param                   = 'eventwatch_page_' . $key;
+		$anchor                  = 'eventwatch-events-' . $key;
 
 		list( $query, $page ) = self::query_for_request( $attributes, $param );
 
@@ -528,7 +549,7 @@ class Event_List {
 	/**
 	 * ページ送り。1 ページしかなければ出さない。
 	 *
-	 * クエリの名前は属性ごとに分かれるので、1 ページに複数置いても互いに動かない。属性まで同じブロックは連動する。
+	 * クエリの名前は属性と、同じ属性の何番目かで分かれるので、1 ページに複数置いても互いに動かない。
 	 *
 	 * @param string $param  ページのクエリの名前。
 	 * @param string $anchor ブロックの id。移った先で一覧の頭に着地する。

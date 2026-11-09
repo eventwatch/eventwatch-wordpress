@@ -33,6 +33,7 @@ class Event_List_Test extends WP_UnitTestCase {
 		Event_Meta::register();
 		update_option( 'timezone_string', 'Asia/Tokyo' );
 		$this->now = new \DateTimeImmutable( 'now', wp_timezone() );
+		Event_List::reset_rendered();
 		if ( ! \WP_Block_Type_Registry::get_instance()->is_registered( Event_List_Block::NAME ) ) {
 			register_block_type( dirname( __DIR__, 2 ) . '/build/blocks/event-list' );
 		}
@@ -617,12 +618,13 @@ class Event_List_Test extends WP_UnitTestCase {
 	}
 
 	/**
-	 * 本番と同じくブロックの描画の中で描く。
+	 * 本番と同じくブロックの描画の中で描く。1 回の呼び出しを 1 回の要求として、一覧の数え直しから始める。
 	 *
 	 * @param array $attrs 属性。
 	 * @return string
 	 */
 	private function render_list( array $attrs ) {
+		Event_List::reset_rendered();
 		return render_block( $this->block( $attrs ) );
 	}
 
@@ -648,7 +650,9 @@ class Event_List_Test extends WP_UnitTestCase {
 	public function test_shortcode_matches_the_block() {
 		$this->event( 'event', $this->future() );
 
-		$block     = render_block( $this->block( array( 'layout' => 'list' ) ) );
+		$block = render_block( $this->block( array( 'layout' => 'list' ) ) );
+		// 同じ設定を同じページに 2 つ置いた形にしないよう、別の要求として描く。
+		Event_List::reset_rendered();
 		$shortcode = do_shortcode( '[eventwatch_events layout="list"]' );
 
 		$this->assertStringContainsString( 'eventwatch-event--row', $shortcode );
@@ -844,6 +848,73 @@ class Event_List_Test extends WP_UnitTestCase {
 
 		$this->assertStringContainsString( '>c<', $second );
 		$this->assertStringNotContainsString( '>a<', $second );
+	}
+
+	/**
+	 * 同じ設定の一覧を 1 ページに 2 つ描くと、2 つ目の id とページの引数には何番目かが付く。
+	 */
+	public function test_same_blocks_on_one_page_get_distinct_ids() {
+		$this->event( 'a', $this->future( '+1 days' ) );
+		$this->event( 'b', $this->future( '+2 days' ) );
+		$this->event( 'c', $this->future( '+3 days' ) );
+
+		list( $first, $second ) = $this->render_twice( array( 'perPage' => 2 ) );
+
+		$this->assertSame( 1, preg_match( '/id="(eventwatch-events-[0-9a-f]{8})"/', $first, $first_id ) );
+		$this->assertStringContainsString( 'id="' . $first_id[1] . '-2"', $second );
+		$this->assertStringNotContainsString( 'id="' . $first_id[1] . '"', $second );
+
+		$this->assertSame( 1, preg_match( '/(eventwatch_page_[0-9a-f]{8})=2/', $first, $first_param ) );
+		$this->assertStringContainsString( $first_param[1] . '-2=2#' . $first_id[1] . '-2"', $second );
+	}
+
+	/**
+	 * 同じ設定の 2 つ目のページ送りは、1 つ目を動かさない。
+	 */
+	public function test_paging_one_of_the_same_blocks_does_not_move_the_other() {
+		$this->event( 'a', $this->future( '+1 days' ) );
+		$this->event( 'b', $this->future( '+2 days' ) );
+		$this->event( 'c', $this->future( '+3 days' ) );
+
+		list( , $second ) = $this->render_twice( array( 'perPage' => 2 ) );
+		preg_match( '/(eventwatch_page_[0-9a-f]{8}-2)=2/', $second, $param );
+
+		$_GET[ $param[1] ] = '2';
+
+		list( $first, $second ) = $this->render_twice( array( 'perPage' => 2 ) );
+		unset( $_GET[ $param[1] ] );
+
+		$this->assertStringContainsString( '>a<', $first );
+		$this->assertStringNotContainsString( '>c<', $first );
+		$this->assertStringContainsString( '>c<', $second );
+		$this->assertStringNotContainsString( '>a<', $second );
+	}
+
+	/**
+	 * 1 つだけ置いたときの名前には何も足さず、要求が変わっても同じ。
+	 */
+	public function test_single_block_keeps_its_page_param() {
+		$this->event( 'a', $this->future( '+1 days' ) );
+		$this->event( 'b', $this->future( '+2 days' ) );
+		$this->event( 'c', $this->future( '+3 days' ) );
+
+		$once  = $this->render_list( array( 'perPage' => 2 ) );
+		$again = $this->render_list( array( 'perPage' => 2 ) );
+
+		$this->assertSame( 1, preg_match( '/href="[^"]*(eventwatch_page_[0-9a-f]{8})=2#(eventwatch-events-[0-9a-f]{8})"/', $once, $match ) );
+		$this->assertStringContainsString( 'id="' . $match[2] . '"', $once );
+		$this->assertStringContainsString( $match[1] . '=2#' . $match[2] . '"', $again );
+	}
+
+	/**
+	 * 1 回の要求の中で、同じ設定の一覧を 2 つ描く。
+	 *
+	 * @param array $attrs 属性。
+	 * @return string[]
+	 */
+	private function render_twice( array $attrs ) {
+		Event_List::reset_rendered();
+		return array( render_block( $this->block( $attrs ) ), render_block( $this->block( $attrs ) ) );
 	}
 
 	/**
