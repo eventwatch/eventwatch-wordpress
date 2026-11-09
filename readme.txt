@@ -16,6 +16,8 @@ EventWatch Events lets you manage events on your own WordPress site. Add events 
 
 You can use the plugin without an EventWatch account. To connect your site to EventWatch, you need an EventWatch account and an API key. See "Connecting to EventWatch" below.
 
+Setup guide: https://docs.eventwatch.app/en/wordpress/setup . Documentation for developers, including block attributes, templates, filters, and the API: https://docs.eventwatch.app/en/developers .
+
 = Showing events on your site =
 
 Add the Event List block to any page. Choose cards or a list, the number of events per page, the order, and filters by category, tag, prefecture, and dates. The block follows your theme's colors and fonts, and you can change them in the block settings. Only published events that have not ended are listed. Events with no dates and password-protected events are not listed. Events are ordered by the date shown on their card: the next date that has not ended, or, when you filter by dates, the first date within them. With a date filter, an event is listed only if one of its dates falls within it.
@@ -93,6 +95,30 @@ By saving a key, you agree to the EventWatch Terms of Service ( https://eventwat
 
 Your site does not depend on EventWatch. Your pages and publishing keep working if EventWatch is unavailable, and visitors' browsers never connect to EventWatch for the event pages or blocks. The only link to EventWatch that visitors get is the "Open in the app" link for events listed there.
 
+= External services =
+
+This plugin uses two outside services. It contacts neither of them until you enter an API key for that service.
+
+**EventWatch** (https://eventwatch.app) is the event listing service this plugin sends your events to. The plugin connects your server to the EventWatch API (`api.eventwatch.app`) only after you enter an EventWatch API key, and every request to the API carries that key. Below, the site ID is a random ID the plugin creates for your site, and the post ID is the WordPress ID of the event. The plugin connects:
+
+* When an administrator uses "Check connection". The response gives your organization's name.
+* When an event is published, including a scheduled event at its publish time, when a published event is updated, when an administrator uses "Send all to EventWatch", when a failed send is retried, and, for published events that were already sent, when the address of your site or its admin area, its permalink settings, or the URL prefix of its event pages changes. This sends the event's title, content, dates, time zone, notes on dates, category, prefecture, online setting, venue name and address, official page URL (the event's page on your site if you did not enter one), last-updated time, the site ID and post ID, and the addresses of your site and its admin area, and uploads its featured image file. EventWatch shows these two addresses to your organization's members, so they can find the site that sent an event.
+* When an event that was sent is moved to draft, pending review, private, password-protected, or the trash, is scheduled for a later date, or is set not to be sent. This sends the site ID, the post ID, and the event's last-updated time, and EventWatch withdraws the event.
+* When an event that was sent is permanently deleted. This sends the site ID and the post ID, and EventWatch deletes the event.
+* When an event is opened in the editor, and about once an hour for up to 30 published events, to read the review status of events it has sent. These requests send the site ID and the post ID, and no event content.
+* When an administrator uses "Import from EventWatch". The plugin reads your organization's posts, downloads their images from the addresses EventWatch returns, and sends the site ID, the post ID, the EventWatch post ID, and the addresses of your site and its admin area. If you edited or published a post before retrying an import that did not finish, the post is then sent in the same way as an updated event, unless it is still a draft that is not listed on EventWatch.
+* When the plugin is deleted. This sends the site ID and tells EventWatch to detach this site's events and to remove the addresses of your site and its admin area. The events stay listed on EventWatch, and can be edited there.
+
+Terms of use: https://eventwatch.app/en/terms . Privacy policy: https://eventwatch.app/en/privacy .
+
+**Google Maps** (https://www.google.com/maps): by default, event pages do not connect to Google. Only if you enter a Google Maps API key in Settings > EventWatch, the event page embeds a Google map of the venue. Your visitors' browsers then connect to Google when the map loads, and send your Google Maps API key and the venue's address, or its name if there is no address. Like any connection, this also gives Google the visitor's IP address, and the browser tells Google which site the map is on. Events held online have no map. Google's terms and pricing apply to the key, and you are responsible for reviewing them. Terms of service: https://cloud.google.com/maps-platform/terms . Privacy policy: https://policies.google.com/privacy .
+
+**Links on event pages**: the links to Google Maps, OpenStreetMap, Google Calendar, X, LINE, and Facebook, and, for events listed on EventWatch, the links to EventWatch, the App Store, and Google Play, open those services only when a visitor chooses them. Nothing is sent to them before that.
+
+= Source code =
+
+The source code, including the uncompressed JavaScript for the blocks and the editor, is at https://github.com/eventwatch/eventwatch-wordpress . The `build` folder in the plugin is generated from the `src` folder there with `npm ci` and `npm run build`. The README in the repository explains how to set up a development environment.
+
 = Review status =
 
 The EventWatch panel in the editor and the EventWatch column in the event list show where each event stands: not sent, waiting to send, under review, listed, changes requested, paused, withdrawn, couldn't send, or not sending. If EventWatch asks for changes, the reason appears in the panel. Fix the event and update it to send it again. The column appears only when a key is set.
@@ -107,12 +133,6 @@ Posts listed on EventWatch are imported as published; all others as drafts. No e
 
 Importing runs one post at a time while the page is open, and stops if you close the page. If an import doesn't finish, the draft stays on your site and the page offers to try again without creating a second event.
 
-= External services =
-
-**EventWatch** (https://eventwatch.app): this plugin connects your server to the EventWatch API (`api.eventwatch.app`) only after you enter an API key. It connects when an administrator uses "Check connection", which sends the API key and returns your organization's name, when events are sent as described in "What is sent to EventWatch", when it reads the status of events it has sent, as described in "Review status", and when an administrator uses "Import from EventWatch", which reads your organization's posts, downloads their images from the addresses EventWatch returns, and sends the site ID, the post ID, the EventWatch post ID, and the addresses of your site and its admin area. Sending an event sends its title, content, dates, time zone, notes on dates, category, prefecture, online setting, venue name and address, official page URL, last-updated time, the site ID and post ID, and the addresses of your site and its admin area, and its featured image file. EventWatch shows these two addresses to your organization's members, so they can find the site that sent an event. Deleting the plugin tells EventWatch to detach this site's events and to remove these addresses. Terms of use: https://eventwatch.app/en/terms . Privacy policy: https://eventwatch.app/en/privacy .
-
-**Google Maps**: see "Maps" above.
-
 = Scheduled events =
 
 WordPress publishes scheduled events with WP-Cron, which only runs when someone visits your site. On a site with few visitors, a scheduled event may be published later than the time you set. To publish on time, run WP-Cron from your server's cron.
@@ -120,10 +140,6 @@ WordPress publishes scheduled events with WP-Cron, which only runs when someone 
 = Removing the plugin =
 
 Deleting the plugin removes its settings, including the API key and the site ID, the send status of each event, and the capabilities it added to user roles. It also tells EventWatch to detach this site's events: they stay listed on EventWatch and you can edit them there. If EventWatch can't be reached, the plugin is still deleted; in that case, revoke the API key on EventWatch. Your events stay in the database, along with your choice not to send an event, unless you turn on "Delete all events when the plugin is deleted" in Settings > EventWatch. If you reinstall the plugin, the site gets a new site ID, so EventWatch treats it as a new site: when you publish the remaining events, they can be sent as separate posts.
-
-= Source code =
-
-The source code, including the uncompressed JavaScript for the blocks and the editor, is at https://github.com/eventwatch/eventwatch-wordpress . The `build` folder in the plugin is generated from the `src` folder there with `npm ci` and `npm run build`. The README in the repository explains how to set up a development environment.
 
 = Translations =
 
