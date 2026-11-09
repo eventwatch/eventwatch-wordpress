@@ -594,6 +594,45 @@ class Settings_Connection_Test extends WP_UnitTestCase {
 	}
 
 	/**
+	 * 公開のドキュメントも、ja は接頭辞なし、それ以外は /en/ の下へ。
+	 */
+	public function test_docs_url_follows_the_locale() {
+		$this->assertSame( 'https://docs.eventwatch.app/en/wordpress/setup', Connection_Admin::docs_url( '/wordpress/setup' ) );
+
+		add_filter(
+			'determine_locale',
+			static function () {
+				return 'ja';
+			}
+		);
+		$this->assertSame( 'https://docs.eventwatch.app/wordpress/setup', Connection_Admin::docs_url( '/wordpress/setup' ) );
+	}
+
+	/**
+	 * 設定の手順へのリンクは、キーを入れる前も入れた後も接続の節に出る。
+	 */
+	public function test_setup_guide_link_is_shown_with_and_without_a_key() {
+		Settings::add_fields();
+		$link = '<a href="https://docs.eventwatch.app/en/wordpress/setup" target="_blank" rel="noopener noreferrer">';
+
+		$without_key = $this->output_of(
+			static function () {
+				do_settings_sections( Settings::PAGE );
+			}
+		);
+
+		update_option( Connection::KEY_OPTION, self::KEY );
+		$with_key = $this->output_of(
+			static function () {
+				do_settings_sections( Settings::PAGE );
+			}
+		);
+
+		$this->assertStringContainsString( $link, $without_key );
+		$this->assertStringContainsString( $link, $with_key );
+	}
+
+	/**
 	 * キーと識別の option が自動の読み込みに載らない。
 	 */
 	public function test_options_are_not_autoloaded() {

@@ -199,7 +199,7 @@ class Settings {
 	 * @return void
 	 */
 	public static function add_fields() {
-		add_settings_section( self::SECTION_CONNECTION, __( 'EventWatch connection', 'eventwatch' ), '__return_false', self::PAGE );
+		add_settings_section( self::SECTION_CONNECTION, __( 'EventWatch connection', 'eventwatch' ), array( self::class, 'render_connection_section' ), self::PAGE );
 		add_settings_field(
 			Connection::KEY_OPTION,
 			__( 'EventWatch API key', 'eventwatch' ),
@@ -302,6 +302,19 @@ class Settings {
 			<?php Connection_Admin::render_forms(); ?>
 		</div>
 		<?php
+	}
+
+	/**
+	 * 接続の節の説明。欄の描画はキーの有無で分かれるので、どちらでも見えるようにここへ置く。
+	 *
+	 * @return void
+	 */
+	public static function render_connection_section() {
+		printf(
+			'<p class="description"><a href="%1$s" target="_blank" rel="noopener noreferrer">%2$s</a></p>',
+			esc_url( Connection_Admin::docs_url( '/wordpress/setup' ) ),
+			esc_html__( 'How to connect your site to EventWatch', 'eventwatch' )
+		);
 	}
 
 	/**

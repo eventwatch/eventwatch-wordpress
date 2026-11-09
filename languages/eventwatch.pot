@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-06T16:54:24+00:00\n"
+"POT-Creation-Date: 2026-11-09T14:56:40+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: eventwatch\n"
@@ -61,119 +61,119 @@ msgstr[1] ""
 
 #: includes/class-admin-columns.php:269
 #: includes/class-event-ical.php:166
-#: includes/class-event-list.php:594
+#: includes/class-event-list.php:613
 msgid "Online"
 msgstr ""
 
-#: includes/class-connection-admin.php:78
+#: includes/class-connection-admin.php:83
 msgid "The EventWatch API key was removed."
 msgstr ""
 
-#: includes/class-connection-admin.php:94
+#: includes/class-connection-admin.php:99
 msgid "The new URL was saved, and sending to EventWatch has resumed."
 msgstr ""
 
-#: includes/class-connection-admin.php:113
+#: includes/class-connection-admin.php:118
 msgid "This site is now treated as a separate site. It keeps using the API key set in wp-config.php."
 msgstr ""
 
-#: includes/class-connection-admin.php:114
+#: includes/class-connection-admin.php:119
 msgid "This site is now treated as a separate site. Its saved API key was removed. To send events from this site, enter a key."
 msgstr ""
 
-#: includes/class-connection-admin.php:132
+#: includes/class-connection-admin.php:137
 msgid "Events can’t be sent right now. Check the connection status on this page."
 msgstr ""
 
 #. translators: %d: number of events.
-#: includes/class-connection-admin.php:142
+#: includes/class-connection-admin.php:147
 #, php-format
 msgid "%d event is waiting to be sent to EventWatch."
 msgid_plural "%d events are waiting to be sent to EventWatch."
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/class-connection-admin.php:148
+#: includes/class-connection-admin.php:153
 msgid "There are no events to send."
 msgstr ""
 
 #. translators: %s: organization name on EventWatch.
-#: includes/class-connection-admin.php:234
+#: includes/class-connection-admin.php:239
 #, php-format
 msgid "Connected to EventWatch (%s)"
 msgstr ""
 
-#: includes/class-connection-admin.php:237
+#: includes/class-connection-admin.php:242
 msgid "EventWatch rejected this API key. It may have been revoked, or the person who issued it may have left your organization or stopped being an owner. Ask an owner of your organization to issue a new key under Organization settings › Site connection, then update it in wp-config.php."
 msgstr ""
 
-#: includes/class-connection-admin.php:239
+#: includes/class-connection-admin.php:244
 msgid "EventWatch rejected this API key. It may have been revoked, or the person who issued it may have left your organization or stopped being an owner. Ask an owner of your organization to issue a new key under Organization settings › Site connection, then enter it here."
 msgstr ""
 
-#: includes/class-connection-admin.php:241
+#: includes/class-connection-admin.php:246
 msgid "Your organization is suspended on EventWatch, so nothing can be sent for now. This isn’t a problem with your API key, so you don’t need to change it. Please contact EventWatch."
 msgstr ""
 
-#: includes/class-connection-admin.php:244
+#: includes/class-connection-admin.php:249
 msgid "This site is still connected to EventWatch with another API key that hasn’t been revoked, so EventWatch doesn’t accept changes from this key. Revoke the old key under Organization settings › Site connection on EventWatch, then use “Check connection”, and sending resumes."
 msgstr ""
 
-#: includes/class-connection-admin.php:246
+#: includes/class-connection-admin.php:251
 msgid "EventWatch doesn’t allow this API key to be used for this site. Please contact EventWatch."
 msgstr ""
 
-#: includes/class-connection-admin.php:248
+#: includes/class-connection-admin.php:253
 msgid "Couldn’t confirm the connection to EventWatch. Wait a moment, then try again. Your site and events aren’t affected."
 msgstr ""
 
-#: includes/class-connection-admin.php:251
+#: includes/class-connection-admin.php:256
 msgid "Not checked yet. Use “Check connection” to confirm that this key works."
 msgstr ""
 
-#: includes/class-connection-admin.php:274
+#: includes/class-connection-admin.php:298
 msgid "Sorry, you are not allowed to manage options for this site."
 msgstr ""
 
-#: includes/class-connection-admin.php:318
+#: includes/class-connection-admin.php:342
 msgid "To list these events on EventWatch, enter an EventWatch API key. Your site works without one."
 msgstr ""
 
-#: includes/class-connection-admin.php:324
+#: includes/class-connection-admin.php:348
 msgid "Don’t show this again"
 msgstr ""
 
-#: includes/class-connection-admin.php:336
+#: includes/class-connection-admin.php:360
 msgid "Sending to EventWatch is stopped because this site’s URL has changed."
 msgstr ""
 
 #. translators: 1: site URL when it was last confirmed, 2: current site URL.
-#: includes/class-connection-admin.php:340
+#: includes/class-connection-admin.php:364
 #, php-format
 msgid "Saved URL: %1$s. Current URL: %2$s. Nothing is sent until you choose, so a copy of your site can’t change your live listings."
 msgstr ""
 
-#: includes/class-connection-admin.php:356
+#: includes/class-connection-admin.php:380
 msgid "If this is a copy, it becomes a separate site. The API key set in wp-config.php can’t be removed here, so this copy keeps sending events with that key. Remove it from wp-config.php first if this copy shouldn’t send events."
 msgstr ""
 
-#: includes/class-connection-admin.php:357
+#: includes/class-connection-admin.php:381
 msgid "If this is a copy, it becomes a separate site. Its saved API key is removed, and you enter a key again only if this copy should send events."
 msgstr ""
 
-#: includes/class-connection-admin.php:359
+#: includes/class-connection-admin.php:383
 msgid "If the site moved, sending continues as the same site."
 msgstr ""
 
-#: includes/class-connection-admin.php:361
+#: includes/class-connection-admin.php:385
 msgid "This is a copy"
 msgstr ""
 
-#: includes/class-connection-admin.php:363
+#: includes/class-connection-admin.php:387
 msgid "The site moved"
 msgstr ""
 
-#: includes/class-connection-admin.php:376
+#: includes/class-connection-admin.php:400
 msgid "Open EventWatch settings"
 msgstr ""
 
@@ -345,98 +345,98 @@ msgstr ""
 msgid "Visit official page"
 msgstr ""
 
-#: includes/class-event-import.php:297
+#: includes/class-event-import.php:299
 msgid "This post can’t be imported any more. It may have been deleted or imported from another site."
 msgstr ""
 
-#: includes/class-event-import.php:307
+#: includes/class-event-import.php:309
 msgid "The images couldn’t be loaded from EventWatch. Wait a moment, then try again."
 msgstr ""
 
-#: includes/class-event-import.php:312
+#: includes/class-event-import.php:314
 msgid "The post couldn’t be created on this site. Try again."
 msgstr ""
 
-#: includes/class-event-import.php:613
+#: includes/class-event-import.php:617
 msgid "Your EventWatch organization is suspended. Contact EventWatch support."
 msgstr ""
 
-#: includes/class-event-import.php:616
+#: includes/class-event-import.php:620
 msgid "This site is still connected to EventWatch with another API key that hasn’t been revoked. Revoke the old key under Organization settings › Site connection on EventWatch, then try again."
 msgstr ""
 
-#: includes/class-event-import.php:618
+#: includes/class-event-import.php:622
 msgid "This API key can’t import posts. Issue a new key with EventWatch, then set it in Settings › EventWatch."
 msgstr ""
 
-#: includes/class-event-import.php:620
+#: includes/class-event-import.php:624
 msgid "The site URL has changed. Confirm whether this is a copy in Settings › EventWatch, then try again."
 msgstr ""
 
-#: includes/class-event-import.php:623
+#: includes/class-event-import.php:627
 msgid "The API key was rejected. Check it in Settings › EventWatch, then try again."
 msgstr ""
 
-#: includes/class-event-import.php:637
+#: includes/class-event-import.php:641
 msgid "Another site has already imported this post. Delete this draft if you don’t need it."
 msgstr ""
 
-#: includes/class-event-import.php:640
+#: includes/class-event-import.php:644
 msgid "This draft was already sent to EventWatch as a separate post. Delete one of the two posts on EventWatch, then try again."
 msgstr ""
 
-#: includes/class-event-import.php:643
+#: includes/class-event-import.php:647
 msgid "This post is no longer on EventWatch. Delete this draft if you don’t need it."
 msgstr ""
 
-#: includes/class-event-import.php:646
+#: includes/class-event-import.php:650
 msgid "EventWatch didn’t respond. Wait a moment, then try again."
 msgstr ""
 
-#: includes/class-event-import.php:649
+#: includes/class-event-import.php:653
 msgid "EventWatch rejected this request. Try again later."
 msgstr ""
 
-#: includes/class-event-list.php:109
+#: includes/class-event-list.php:130
 #: build/blocks/past-events/index.js:1
 msgid "No past events yet."
 msgstr ""
 
-#: includes/class-event-list.php:113
+#: includes/class-event-list.php:134
 msgid "No events this month."
 msgstr ""
 
-#: includes/class-event-list.php:116
+#: includes/class-event-list.php:137
 msgid "No events in the next 30 days."
 msgstr ""
 
-#: includes/class-event-list.php:118
+#: includes/class-event-list.php:139
 #: includes/class-event-search.php:228
 #: build/blocks/event-list/index.js:1
 msgid "No upcoming events yet."
 msgstr ""
 
 #. translators: %d: the number of other dates of the event.
-#: includes/class-event-list.php:473
+#: includes/class-event-list.php:492
 #, php-format
 msgid "+%d more date"
 msgid_plural "+%d more dates"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/class-event-list.php:554
+#: includes/class-event-list.php:573
 msgid "Previous"
 msgstr ""
 
-#: includes/class-event-list.php:555
+#: includes/class-event-list.php:574
 msgid "Next"
 msgstr ""
 
-#: includes/class-event-list.php:559
+#: includes/class-event-list.php:578
 msgid "Pagination"
 msgstr ""
 
-#: includes/class-event-list.php:599
+#: includes/class-event-list.php:618
 msgid "Venue to be announced"
 msgstr ""
 
@@ -761,19 +761,19 @@ msgstr ""
 msgid "Import from EventWatch"
 msgstr ""
 
-#: includes/class-import-admin.php:115
+#: includes/class-import-admin.php:116
 msgid "Import posts your organization created on EventWatch as WordPress posts. Posts listed on EventWatch are imported as published; all others as drafts."
 msgstr ""
 
-#: includes/class-import-admin.php:129
+#: includes/class-import-admin.php:130
 msgid "Importing needs JavaScript. Turn it on, then reload this page."
 msgstr ""
 
-#: includes/class-import-admin.php:161
+#: includes/class-import-admin.php:162
 msgid "The list couldn’t be loaded from EventWatch. Wait a moment, then reload this page."
 msgstr ""
 
-#: includes/class-import-admin.php:243
+#: includes/class-import-admin.php:244
 #: build/import-page.js:5
 msgid "The list couldn’t be loaded from EventWatch. Wait a moment, then try again."
 msgstr ""
@@ -972,163 +972,167 @@ msgstr ""
 msgid "Settings that connect this site to EventWatch."
 msgstr ""
 
-#: includes/class-settings.php:329
+#: includes/class-settings.php:316
+msgid "How to connect your site to EventWatch"
+msgstr ""
+
+#: includes/class-settings.php:342
 msgid "Check connection"
 msgstr ""
 
-#: includes/class-settings.php:335
+#: includes/class-settings.php:348
 msgid "Change key"
 msgstr ""
 
-#: includes/class-settings.php:337
+#: includes/class-settings.php:350
 msgid "New key. Enter it, then save your changes."
 msgstr ""
 
-#: includes/class-settings.php:339
+#: includes/class-settings.php:352
 msgid "Remove key"
 msgstr ""
 
-#: includes/class-settings.php:341
+#: includes/class-settings.php:354
 msgid "If this site has already sent events with the old key, revoke the old key on EventWatch first. Until it’s revoked, EventWatch doesn’t accept changes from the new key."
 msgstr ""
 
-#: includes/class-settings.php:349
+#: includes/class-settings.php:362
 msgid "This key is set in wp-config.php, so it can’t be changed here."
 msgstr ""
 
-#: includes/class-settings.php:363
-#: includes/class-settings.php:622
+#: includes/class-settings.php:376
+#: includes/class-settings.php:635
 msgid "Not set"
 msgstr ""
 
-#: includes/class-settings.php:367
+#: includes/class-settings.php:380
 msgid "To list your events on EventWatch, you need an EventWatch account and an API key. Your site works without them: events stay on your site and nothing is sent."
 msgstr ""
 
-#: includes/class-settings.php:372
+#: includes/class-settings.php:385
 msgid "Issue an API key on EventWatch"
 msgstr ""
 
-#: includes/class-settings.php:386
+#: includes/class-settings.php:399
 msgid "The key you issued in EventWatch under Organization settings › Site connection. Saved keys are hidden."
 msgstr ""
 
-#: includes/class-settings.php:395
+#: includes/class-settings.php:408
 msgid "A key saved here is also included in database backups and copies of your site. We recommend setting it in wp-config.php instead:"
 msgstr ""
 
-#: includes/class-settings.php:402
+#: includes/class-settings.php:415
 msgid "On a multisite network, the constant applies to every site. To use a different key for each site, save the key on each site’s settings page."
 msgstr ""
 
-#: includes/class-settings.php:418
+#: includes/class-settings.php:431
 msgid "By sending events with this key, you agree to the EventWatch Terms of Service and Posting Guidelines."
 msgstr ""
 
-#: includes/class-settings.php:419
+#: includes/class-settings.php:432
 msgid "By saving a key, you agree to the EventWatch Terms of Service and Posting Guidelines."
 msgstr ""
 
-#: includes/class-settings.php:422
+#: includes/class-settings.php:435
 msgid "Terms of Service"
 msgstr ""
 
-#: includes/class-settings.php:424
+#: includes/class-settings.php:437
 msgid "Posting Guidelines"
 msgstr ""
 
-#: includes/class-settings.php:453
+#: includes/class-settings.php:466
 msgid "Open Site connection on EventWatch"
 msgstr ""
 
-#: includes/class-settings.php:455
+#: includes/class-settings.php:468
 #: includes/class-sync-rest.php:222
 msgid "Contact EventWatch"
 msgstr ""
 
 #. translators: %s: date and time, or "Not yet".
-#: includes/class-settings.php:481
+#: includes/class-settings.php:494
 #, php-format
 msgid "Last successful send: %s"
 msgstr ""
 
-#: includes/class-settings.php:482
+#: includes/class-settings.php:495
 msgid "Not yet"
 msgstr ""
 
 #. translators: %d: number of events.
-#: includes/class-settings.php:491
+#: includes/class-settings.php:504
 #, php-format
 msgid "Waiting to send: %d event"
 msgid_plural "Waiting to send: %d events"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/class-settings.php:501
+#: includes/class-settings.php:514
 msgid "DISABLE_WP_CRON is on, so WP-Cron doesn’t run on its own. If your server’s cron doesn’t run it, failed sends aren’t retried."
 msgstr ""
 
-#: includes/class-settings.php:502
+#: includes/class-settings.php:515
 msgid "Retries use WP-Cron, which only runs when someone visits your site. To retry on time, run it from your server’s cron."
 msgstr ""
 
-#: includes/class-settings.php:505
+#: includes/class-settings.php:518
 msgid "How to run WP-Cron from your server"
 msgstr ""
 
 #. translators: %d: number of events.
-#: includes/class-settings.php:530
+#: includes/class-settings.php:543
 #, php-format
 msgid "Published but not sent yet: %d event"
 msgid_plural "Published but not sent yet: %d events"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/class-settings.php:539
+#: includes/class-settings.php:552
 msgid "Send all to EventWatch"
 msgstr ""
 
-#: includes/class-settings.php:543
+#: includes/class-settings.php:556
 msgid "Each event goes to review on EventWatch. Events are sent a few dozen at a time with WP-Cron, so this can take a while. Events set not to send, events that have ended, and events missing required details aren’t included."
 msgstr ""
 
-#: includes/class-settings.php:557
+#: includes/class-settings.php:570
 msgid "Delete all events when the plugin is deleted"
 msgstr ""
 
-#: includes/class-settings.php:561
+#: includes/class-settings.php:574
 msgid "Off by default, so your events stay in the database. If you turn this on, deleting the plugin permanently removes the events on this site, and you can’t restore them."
 msgstr ""
 
-#: includes/class-settings.php:581
+#: includes/class-settings.php:594
 msgid "Lowercase letters, numbers, and hyphens. When you change it, the old URLs redirect to the new ones."
 msgstr ""
 
-#: includes/class-settings.php:586
+#: includes/class-settings.php:599
 msgid "This has no effect while your permalinks use the Plain setting."
 msgstr ""
 
-#: includes/class-settings.php:602
+#: includes/class-settings.php:615
 msgid "— Not set —"
 msgstr ""
 
-#: includes/class-settings.php:608
+#: includes/class-settings.php:621
 msgid "The “Back to events” link on event pages goes here. The link is hidden until you choose a page."
 msgstr ""
 
-#: includes/class-settings.php:626
+#: includes/class-settings.php:639
 msgid "When set, a venue map is embedded on event detail pages. When empty, only map links are shown."
 msgstr ""
 
-#: includes/class-settings.php:627
+#: includes/class-settings.php:640
 msgid "Embedding a map makes visitors’ browsers load the map from Google. The key appears in the page HTML, so restrict it to your site’s domain with an HTTP referrer restriction."
 msgstr ""
 
-#: includes/class-settings.php:628
+#: includes/class-settings.php:641
 msgid "Create the key in Google Cloud (with the Maps Embed API enabled). As the site owner, you’re responsible for reviewing Google’s terms and pricing. This key is not sent to EventWatch."
 msgstr ""
 
-#: includes/class-settings.php:637
+#: includes/class-settings.php:650
 msgid "How to get an API key (Google)"
 msgstr ""
 

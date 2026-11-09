@@ -29,6 +29,11 @@ class Connection_Admin {
 	const HIDE_META = 'eventwatch_hide_no_key_notice';
 
 	/**
+	 * 公開のドキュメント。配布した版に URL が残るので、公開後に変わらないパスだけを渡す。
+	 */
+	const DOCS_WEB = 'https://docs.eventwatch.app';
+
+	/**
 	 * フックを登録する。
 	 *
 	 * @return void
@@ -258,7 +263,26 @@ class Connection_Admin {
 	 * @return string
 	 */
 	public static function web_url( $path ) {
-		return Event_Detail::EVENTWATCH_WEB . ( 0 === strpos( determine_locale(), 'ja' ) ? '' : '/en' ) . $path;
+		return Event_Detail::EVENTWATCH_WEB . self::locale_prefix() . $path;
+	}
+
+	/**
+	 * 公開のドキュメントの URL。ja 以外は /en/ の下を開く。
+	 *
+	 * @param string $path `/` で始まるパス。
+	 * @return string
+	 */
+	public static function docs_url( $path ) {
+		return self::DOCS_WEB . self::locale_prefix() . $path;
+	}
+
+	/**
+	 * Web とドキュメントの URL で、パスの前に付ける言語の接頭辞。
+	 *
+	 * @return string
+	 */
+	private static function locale_prefix() {
+		return 0 === strpos( determine_locale(), 'ja' ) ? '' : '/en';
 	}
 
 	/**
