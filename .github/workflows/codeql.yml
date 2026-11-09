@@ -29,11 +29,11 @@ jobs:
         with:
           persist-credentials: false
       # 解析する JS が 1 つも無いと CodeQL は失敗するので、JS が入るまでは step を飛ばす
-      - uses: github/codeql-action/init@6f2ac81f5cd81fe351a197ba0b00d91d03cd2aee # v4.39.0
+      - uses: github/codeql-action/init@9b3254085494b55a0f7c4c2b3d2d52cc712ce370 # v4.39.1
         if: matrix.language == 'actions' || hashFiles('**/*.js', '**/*.mjs', '**/*.cjs', '**/*.jsx', '**/*.ts', '**/*.tsx') != ''
         with:
           languages: ${{ matrix.language }}
-      - uses: github/codeql-action/analyze@6f2ac81f5cd81fe351a197ba0b00d91d03cd2aee # v4.39.0
+      - uses: github/codeql-action/analyze@9b3254085494b55a0f7c4c2b3d2d52cc712ce370 # v4.39.1
         if: matrix.language == 'actions' || hashFiles('**/*.js', '**/*.mjs', '**/*.cjs', '**/*.jsx', '**/*.ts', '**/*.tsx') != ''
         with:
           category: /language:${{ matrix.language }}
