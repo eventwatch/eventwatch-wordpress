@@ -27,6 +27,7 @@ class Past_Events_Test extends WP_UnitTestCase {
 		parent::set_up();
 		Event_Meta::register();
 		update_option( 'timezone_string', 'Asia/Tokyo' );
+		Event_List::reset_rendered();
 		$registry = \WP_Block_Type_Registry::get_instance();
 		$build    = dirname( __DIR__, 2 ) . '/build/blocks/';
 		if ( ! $registry->is_registered( Event_List_Block::NAME ) ) {
@@ -121,13 +122,14 @@ class Past_Events_Test extends WP_UnitTestCase {
 	}
 
 	/**
-	 * ブロックを描く。
+	 * ブロックを描く。1 回の呼び出しを 1 回の要求として、一覧の数え直しから始める。
 	 *
 	 * @param string $name       ブロックの名前。
 	 * @param array  $attributes 属性。
 	 * @return string
 	 */
 	private function render( $name, array $attributes = array() ) {
+		Event_List::reset_rendered();
 		return render_block(
 			array(
 				'blockName'    => $name,
@@ -420,6 +422,32 @@ class Past_Events_Test extends WP_UnitTestCase {
 
 		$this->assertStringContainsString( '>old3<', $this->render( Past_Events_Block::NAME, $same ) );
 		$this->assertStringContainsString( '>next0<', $this->render( Event_List_Block::NAME, $same ) );
+	}
+
+	/**
+	 * 同じ設定の終了したイベントを 1 ページに 2 つ描くと、id とページの引数が別になる。
+	 */
+	public function test_same_blocks_on_one_page_get_distinct_ids() {
+		foreach ( array( 'old1', 'old2', 'old3' ) as $i => $title ) {
+			$this->event( $title, $this->dates( '-' . ( $i + 2 ) . ' days 10:00' ) );
+		}
+		$attributes = array( 'perPage' => 2 );
+
+		$first  = $this->render( Past_Events_Block::NAME, $attributes );
+		$second = render_block(
+			array(
+				'blockName'    => Past_Events_Block::NAME,
+				'attrs'        => $attributes,
+				'innerBlocks'  => array(),
+				'innerHTML'    => '',
+				'innerContent' => array(),
+			)
+		);
+
+		$this->assertSame( 1, preg_match( '/id="(eventwatch-events-[0-9a-f]{8})"/', $first, $id ) );
+		$this->assertSame( 1, preg_match( '/(eventwatch_page_[0-9a-f]{8})=2/', $first, $param ) );
+		$this->assertStringContainsString( 'id="' . $id[1] . '-2"', $second );
+		$this->assertStringContainsString( $param[1] . '-2=2#' . $id[1] . '-2"', $second );
 	}
 
 	/**
