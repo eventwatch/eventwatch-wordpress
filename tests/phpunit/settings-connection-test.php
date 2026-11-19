@@ -486,7 +486,7 @@ class Settings_Connection_Test extends WP_UnitTestCase {
 		$save( Connection::UNAUTHORIZED );
 		$html = $this->output_of( array( Settings::class, 'render_api_key_field' ) );
 		$this->assertStringContainsString( 'revoked', $html );
-		$this->assertStringContainsString( 'owner', $html );
+		$this->assertStringContainsString( 'Ask an admin of your organizer', $html );
 		$this->assertStringContainsString( '/organizer/api-keys', $html );
 
 		$save( Connection::SUSPENDED );
