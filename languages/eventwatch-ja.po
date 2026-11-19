@@ -1897,11 +1897,11 @@ msgstr "サイトを EventWatch につなぐ手順"
 
 #: includes/class-connection-admin.php:242
 msgid "EventWatch rejected this API key. It may have been revoked, or the person who issued it may have left your organizer or stopped being an admin. Ask an admin of your organizer to issue a new key under Organizer settings › Site connection, then update it in wp-config.php."
-msgstr "EventWatch がこの API キーを受け付けませんでした。失効したか、発行した人が主催者を抜けた、または管理者でなくなった可能性があります。主催者の管理者に「主催者の設定 › サイトとの連携」で発行し直してもらい、wp-config.php を更新してください。"
+msgstr "EventWatch がこの API キーを受け付けませんでした。失効したか、発行した人が主催者から抜けた、または管理者でなくなった可能性があります。主催者の管理者に「主催者の設定 › サイトとの連携」で発行し直してもらい、wp-config.php を更新してください。"
 
 #: includes/class-connection-admin.php:244
 msgid "EventWatch rejected this API key. It may have been revoked, or the person who issued it may have left your organizer or stopped being an admin. Ask an admin of your organizer to issue a new key under Organizer settings › Site connection, then enter it here."
-msgstr "EventWatch がこの API キーを受け付けませんでした。失効したか、発行した人が主催者を抜けた、または管理者でなくなった可能性があります。主催者の管理者に「主催者の設定 › サイトとの連携」で発行し直してもらい、ここに入れてください。"
+msgstr "EventWatch がこの API キーを受け付けませんでした。失効したか、発行した人が主催者から抜けた、または管理者でなくなった可能性があります。主催者の管理者に「主催者の設定 › サイトとの連携」で発行し直してもらい、ここに入れてください。"
 
 #: includes/class-connection-admin.php:246
 msgid "Your organizer is suspended on EventWatch, so nothing can be sent for now. This isn’t a problem with your API key, so you don’t need to change it. Please contact EventWatch."
