@@ -1163,19 +1163,11 @@ msgstr "新しい URL を保存し、EventWatch への送信を再開しまし�
 msgid "This site is now treated as a separate site. Its saved API key was removed. To send events from this site, enter a key."
 msgstr "このサイトを別のサイトとして扱います。保存していた API キーは削除しました。このサイトからイベントを送るときは、キーを入れてください。"
 
-#. translators: %s: organization name on EventWatch.
+#. translators: %s: organizer name on EventWatch.
 #: includes/class-connection-admin.php:239
 #, php-format
 msgid "Connected to EventWatch (%s)"
 msgstr "EventWatch とつながっています（%s）"
-
-#: includes/class-connection-admin.php:244
-msgid "EventWatch rejected this API key. It may have been revoked, or the person who issued it may have left your organization or stopped being an owner. Ask an owner of your organization to issue a new key under Organization settings › Site connection, then enter it here."
-msgstr "EventWatch がこの API キーを受け付けませんでした。失効したか、発行した人が団体を抜けた、または管理者でなくなった可能性があります。団体の管理者に「団体の設定 › サイトとの連携」で発行し直してもらい、ここに入れてください。"
-
-#: includes/class-connection-admin.php:246
-msgid "Your organization is suspended on EventWatch, so nothing can be sent for now. This isn’t a problem with your API key, so you don’t need to change it. Please contact EventWatch."
-msgstr "EventWatch で団体が停止されているため、いまは送信できません。API キーの問題ではないので、キーを替える必要はありません。EventWatch に問い合わせてください。"
 
 #: includes/class-connection-admin.php:251
 msgid "EventWatch doesn’t allow this API key to be used for this site. Please contact EventWatch."
@@ -1287,10 +1279,6 @@ msgstr "イベントを EventWatch に掲載するには、EventWatch のアカ�
 msgid "Issue an API key on EventWatch"
 msgstr "EventWatch で API キーを発行する"
 
-#: includes/class-settings.php:399
-msgid "The key you issued in EventWatch under Organization settings › Site connection. Saved keys are hidden."
-msgstr "EventWatch の「団体の設定 › サイトとの連携」で発行したキーです。保存したキーは伏せて表示します。"
-
 #: includes/class-settings.php:408
 msgid "A key saved here is also included in database backups and copies of your site. We recommend setting it in wp-config.php instead:"
 msgstr "ここに保存したキーは、データベースのバックアップやサイトの複製にも含まれます。wp-config.php での設定をおすすめします:"
@@ -1382,10 +1370,6 @@ msgstr "このサイトを別のサイトとして扱います。wp-config.php �
 #: includes/class-connection-admin.php:380
 msgid "If this is a copy, it becomes a separate site. The API key set in wp-config.php can’t be removed here, so this copy keeps sending events with that key. Remove it from wp-config.php first if this copy shouldn’t send events."
 msgstr "複製なら、別のサイトとして扱います。wp-config.php で設定した API キーはここでは削除できないので、この複製はそのキーでイベントを送り続けます。この複製から送らないときは、先に wp-config.php から削除してください。"
-
-#: includes/class-connection-admin.php:242
-msgid "EventWatch rejected this API key. It may have been revoked, or the person who issued it may have left your organization or stopped being an owner. Ask an owner of your organization to issue a new key under Organization settings › Site connection, then update it in wp-config.php."
-msgstr "EventWatch がこの API キーを受け付けませんでした。失効したか、発行した人が団体を抜けた、または管理者でなくなった可能性があります。団体の管理者に「団体の設定 › サイトとの連携」で発行し直してもらい、wp-config.php を更新してください。"
 
 #: includes/class-settings.php:431
 msgid "By sending events with this key, you agree to the EventWatch Terms of Service and Posting Guidelines."
@@ -1680,10 +1664,6 @@ msgstr "EventWatch が画像を受け付けませんでした。別の画像を�
 msgid "Couldn’t upload the image to EventWatch. This is retried automatically about once an hour."
 msgstr "画像を EventWatch へ上げられませんでした。1 時間に 1 回ほど、自動で送り直します。"
 
-#: includes/class-sync-rest.php:246
-msgid "Your organization has reached EventWatch’s limit of images for today. This is retried automatically about once an hour."
-msgstr "団体で上げられる今日の画像の上限に達しました。1 時間に 1 回ほど、自動で送り直します。"
-
 #: build/index.js:8
 msgid "The featured image wasn’t sent"
 msgstr "アイキャッチ画像を送れませんでした"
@@ -1703,10 +1683,6 @@ msgstr "画像を EventWatch から読み込めませんでした。少し待っ
 #: includes/class-event-import.php:314
 msgid "The post couldn’t be created on this site. Try again."
 msgstr "このサイトに投稿を作れませんでした。やり直してください。"
-
-#: includes/class-event-import.php:617
-msgid "Your EventWatch organization is suspended. Contact EventWatch support."
-msgstr "EventWatch の団体が停止されています。EventWatch にお問い合わせください。"
 
 #: includes/class-event-import.php:622
 msgid "This API key can’t import posts. Issue a new key with EventWatch, then set it in Settings › EventWatch."
@@ -1745,10 +1721,6 @@ msgstr "EventWatch に断られました。時間をおいて、やり直して�
 msgid "Import from EventWatch"
 msgstr "EventWatch から取り込む"
 
-#: includes/class-import-admin.php:116
-msgid "Import posts your organization created on EventWatch as WordPress posts. Posts listed on EventWatch are imported as published; all others as drafts."
-msgstr "EventWatch の Web で作った、この団体の投稿を WordPress の投稿として取り込みます。EventWatch で掲載中の投稿は公開、それ以外は下書きとして取り込みます。"
-
 #: includes/class-import-admin.php:130
 msgid "Importing needs JavaScript. Turn it on, then reload this page."
 msgstr "取り込みには JavaScript が必要です。有効にしてから、このページを読み直してください。"
@@ -1773,10 +1745,6 @@ msgstr "開催"
 #: includes/class-import-list-table.php:64
 msgid "EventWatch status"
 msgstr "EventWatch の状態"
-
-#: includes/class-import-list-table.php:75
-msgid "There are no posts to import. Posts your organization creates on EventWatch will appear here."
-msgstr "取り込める投稿はありません。EventWatch でこの団体が作った投稿が、ここに出ます。"
 
 #. translators: %s: the event name.
 #: includes/class-import-list-table.php:101
@@ -1895,14 +1863,6 @@ msgstr "この下書きは、まだ EventWatch に結び付いていません。
 msgid "Import finished"
 msgstr "取り込みました"
 
-#: includes/class-connection-admin.php:249
-msgid "This site is still connected to EventWatch with another API key that hasn’t been revoked, so EventWatch doesn’t accept changes from this key. Revoke the old key under Organization settings › Site connection on EventWatch, then use “Check connection”, and sending resumes."
-msgstr "このサイトは、失効していない別の API キーで EventWatch とつながっているため、このキーからの変更を EventWatch が受け付けません。EventWatch の「団体の設定 › サイトとの連携」で古いキーを失効してから「接続を確かめる」を押すと、送信が再開します。"
-
-#: includes/class-event-import.php:620
-msgid "This site is still connected to EventWatch with another API key that hasn’t been revoked. Revoke the old key under Organization settings › Site connection on EventWatch, then try again."
-msgstr "このサイトは、失効していない別の API キーで EventWatch とつながっています。EventWatch の「団体の設定 › サイトとの連携」で古いキーを失効してから、もう一度お試しください。"
-
 #: includes/class-settings.php:354
 msgid "If this site has already sent events with the old key, revoke the old key on EventWatch first. Until it’s revoked, EventWatch doesn’t accept changes from the new key."
 msgstr "古いキーでイベントを送ったことがあるサイトでは、先に EventWatch で古いキーを失効してください。失効するまで、新しいキーからの変更を EventWatch は受け付けません。"
@@ -1934,3 +1894,43 @@ msgstr "イベントのページには、地図・カレンダー・SNS への�
 #: includes/class-settings.php:316
 msgid "How to connect your site to EventWatch"
 msgstr "サイトを EventWatch につなぐ手順"
+
+#: includes/class-connection-admin.php:242
+msgid "EventWatch rejected this API key. It may have been revoked, or the person who issued it may have left your organizer or stopped being an admin. Ask an admin of your organizer to issue a new key under Organizer settings › Site connection, then update it in wp-config.php."
+msgstr "EventWatch がこの API キーを受け付けませんでした。失効したか、発行した人が主催者を抜けた、または管理者でなくなった可能性があります。主催者の管理者に「主催者の設定 › サイトとの連携」で発行し直してもらい、wp-config.php を更新してください。"
+
+#: includes/class-connection-admin.php:244
+msgid "EventWatch rejected this API key. It may have been revoked, or the person who issued it may have left your organizer or stopped being an admin. Ask an admin of your organizer to issue a new key under Organizer settings › Site connection, then enter it here."
+msgstr "EventWatch がこの API キーを受け付けませんでした。失効したか、発行した人が主催者を抜けた、または管理者でなくなった可能性があります。主催者の管理者に「主催者の設定 › サイトとの連携」で発行し直してもらい、ここに入れてください。"
+
+#: includes/class-connection-admin.php:246
+msgid "Your organizer is suspended on EventWatch, so nothing can be sent for now. This isn’t a problem with your API key, so you don’t need to change it. Please contact EventWatch."
+msgstr "EventWatch で主催者が停止されているため、いまは送信できません。API キーの問題ではないので、キーを替える必要はありません。EventWatch に問い合わせてください。"
+
+#: includes/class-connection-admin.php:249
+msgid "This site is still connected to EventWatch with another API key that hasn’t been revoked, so EventWatch doesn’t accept changes from this key. Revoke the old key under Organizer settings › Site connection on EventWatch, then use “Check connection”, and sending resumes."
+msgstr "このサイトは、失効していない別の API キーで EventWatch とつながっているため、このキーからの変更を EventWatch が受け付けません。EventWatch の「主催者の設定 › サイトとの連携」で古いキーを失効してから「接続を確かめる」を押すと、送信が再開します。"
+
+#: includes/class-event-import.php:617
+msgid "Your EventWatch organizer is suspended. Contact EventWatch support."
+msgstr "EventWatch の主催者が停止されています。EventWatch にお問い合わせください。"
+
+#: includes/class-event-import.php:620
+msgid "This site is still connected to EventWatch with another API key that hasn’t been revoked. Revoke the old key under Organizer settings › Site connection on EventWatch, then try again."
+msgstr "このサイトは、失効していない別の API キーで EventWatch とつながっています。EventWatch の「主催者の設定 › サイトとの連携」で古いキーを失効してから、もう一度お試しください。"
+
+#: includes/class-import-admin.php:116
+msgid "Import posts your organizer created on EventWatch as WordPress posts. Posts listed on EventWatch are imported as published; all others as drafts."
+msgstr "EventWatch の Web で作った、この主催者の投稿を WordPress の投稿として取り込みます。EventWatch で掲載中の投稿は公開、それ以外は下書きとして取り込みます。"
+
+#: includes/class-import-list-table.php:75
+msgid "There are no posts to import. Posts your organizer creates on EventWatch will appear here."
+msgstr "取り込める投稿はありません。EventWatch でこの主催者が作った投稿が、ここに出ます。"
+
+#: includes/class-settings.php:399
+msgid "The key you issued in EventWatch under Organizer settings › Site connection. Saved keys are hidden."
+msgstr "EventWatch の「主催者の設定 › サイトとの連携」で発行したキーです。保存したキーは伏せて表示します。"
+
+#: includes/class-sync-rest.php:246
+msgid "Your organizer has reached EventWatch’s limit of images for today. This is retried automatically about once an hour."
+msgstr "主催者で上げられる今日の画像の上限に達しました。1 時間に 1 回ほど、自動で送り直します。"
