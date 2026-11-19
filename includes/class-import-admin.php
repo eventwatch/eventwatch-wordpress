@@ -113,7 +113,7 @@ class Import_Admin {
 		?>
 		<div class="wrap">
 			<h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
-			<p><?php esc_html_e( 'Import posts your organization created on EventWatch as WordPress posts. Posts listed on EventWatch are imported as published; all others as drafts.', 'eventwatch' ); ?></p>
+			<p><?php esc_html_e( 'Import posts your organizer created on EventWatch as WordPress posts. Posts listed on EventWatch are imported as published; all others as drafts.', 'eventwatch' ); ?></p>
 			<div id="eventwatch-import-progress"></div>
 			<?php if ( is_wp_error( $listed ) ) : ?>
 				<div class="notice notice-error inline"><p><?php echo esc_html( self::list_error_text( $listed ) ); ?></p></div>

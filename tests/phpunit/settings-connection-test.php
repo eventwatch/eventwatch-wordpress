@@ -519,7 +519,7 @@ class Settings_Connection_Test extends WP_UnitTestCase {
 
 		$save( array( 'reason' => Api_Client::CODE_SITE_BOUND ) );
 		$html = $this->output_of( array( Settings::class, 'render_api_key_field' ) );
-		$this->assertStringContainsString( 'Revoke the old key under Organization settings', $html );
+		$this->assertStringContainsString( 'Revoke the old key under Organizer settings', $html );
 		$this->assertStringContainsString( 'Check connection', $html );
 		$this->assertStringContainsString( '/organizer/api-keys', $html );
 		$this->assertStringNotContainsString( '/contact', $html );
