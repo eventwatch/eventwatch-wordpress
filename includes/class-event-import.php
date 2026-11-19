@@ -614,10 +614,10 @@ class Event_Import {
 	public static function stop_reason( $code, $api_code = '' ) {
 		switch ( $code ) {
 			case Api_Client::SUSPENDED:
-				return __( 'Your EventWatch organization is suspended. Contact EventWatch support.', 'eventwatch' );
+				return __( 'Your EventWatch organizer is suspended. Contact EventWatch support.', 'eventwatch' );
 			case Api_Client::FORBIDDEN:
 				if ( Api_Client::CODE_SITE_BOUND === $api_code ) {
-					return __( 'This site is still connected to EventWatch with another API key that hasn’t been revoked. Revoke the old key under Organization settings › Site connection on EventWatch, then try again.', 'eventwatch' );
+					return __( 'This site is still connected to EventWatch with another API key that hasn’t been revoked. Revoke the old key under Organizer settings › Site connection on EventWatch, then try again.', 'eventwatch' );
 				}
 				return __( 'This API key can’t import posts. Issue a new key with EventWatch, then set it in Settings › EventWatch.', 'eventwatch' );
 			case Api_Client::SITE_CHANGED:

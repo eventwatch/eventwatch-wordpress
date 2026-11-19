@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-09T14:56:40+00:00\n"
+"POT-Creation-Date: 2026-11-19T04:32:28+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: eventwatch\n"
@@ -97,26 +97,26 @@ msgstr[1] ""
 msgid "There are no events to send."
 msgstr ""
 
-#. translators: %s: organization name on EventWatch.
+#. translators: %s: organizer name on EventWatch.
 #: includes/class-connection-admin.php:239
 #, php-format
 msgid "Connected to EventWatch (%s)"
 msgstr ""
 
 #: includes/class-connection-admin.php:242
-msgid "EventWatch rejected this API key. It may have been revoked, or the person who issued it may have left your organization or stopped being an owner. Ask an owner of your organization to issue a new key under Organization settings › Site connection, then update it in wp-config.php."
+msgid "EventWatch rejected this API key. It may have been revoked, or the person who issued it may have left your organizer or stopped being an admin. Ask an admin of your organizer to issue a new key under Organizer settings › Site connection, then update it in wp-config.php."
 msgstr ""
 
 #: includes/class-connection-admin.php:244
-msgid "EventWatch rejected this API key. It may have been revoked, or the person who issued it may have left your organization or stopped being an owner. Ask an owner of your organization to issue a new key under Organization settings › Site connection, then enter it here."
+msgid "EventWatch rejected this API key. It may have been revoked, or the person who issued it may have left your organizer or stopped being an admin. Ask an admin of your organizer to issue a new key under Organizer settings › Site connection, then enter it here."
 msgstr ""
 
 #: includes/class-connection-admin.php:246
-msgid "Your organization is suspended on EventWatch, so nothing can be sent for now. This isn’t a problem with your API key, so you don’t need to change it. Please contact EventWatch."
+msgid "Your organizer is suspended on EventWatch, so nothing can be sent for now. This isn’t a problem with your API key, so you don’t need to change it. Please contact EventWatch."
 msgstr ""
 
 #: includes/class-connection-admin.php:249
-msgid "This site is still connected to EventWatch with another API key that hasn’t been revoked, so EventWatch doesn’t accept changes from this key. Revoke the old key under Organization settings › Site connection on EventWatch, then use “Check connection”, and sending resumes."
+msgid "This site is still connected to EventWatch with another API key that hasn’t been revoked, so EventWatch doesn’t accept changes from this key. Revoke the old key under Organizer settings › Site connection on EventWatch, then use “Check connection”, and sending resumes."
 msgstr ""
 
 #: includes/class-connection-admin.php:251
@@ -358,11 +358,11 @@ msgid "The post couldn’t be created on this site. Try again."
 msgstr ""
 
 #: includes/class-event-import.php:617
-msgid "Your EventWatch organization is suspended. Contact EventWatch support."
+msgid "Your EventWatch organizer is suspended. Contact EventWatch support."
 msgstr ""
 
 #: includes/class-event-import.php:620
-msgid "This site is still connected to EventWatch with another API key that hasn’t been revoked. Revoke the old key under Organization settings › Site connection on EventWatch, then try again."
+msgid "This site is still connected to EventWatch with another API key that hasn’t been revoked. Revoke the old key under Organizer settings › Site connection on EventWatch, then try again."
 msgstr ""
 
 #: includes/class-event-import.php:622
@@ -762,7 +762,7 @@ msgid "Import from EventWatch"
 msgstr ""
 
 #: includes/class-import-admin.php:116
-msgid "Import posts your organization created on EventWatch as WordPress posts. Posts listed on EventWatch are imported as published; all others as drafts."
+msgid "Import posts your organizer created on EventWatch as WordPress posts. Posts listed on EventWatch are imported as published; all others as drafts."
 msgstr ""
 
 #: includes/class-import-admin.php:130
@@ -791,7 +791,7 @@ msgid "EventWatch status"
 msgstr ""
 
 #: includes/class-import-list-table.php:75
-msgid "There are no posts to import. Posts your organization creates on EventWatch will appear here."
+msgid "There are no posts to import. Posts your organizer creates on EventWatch will appear here."
 msgstr ""
 
 #. translators: %s: the event name.
@@ -1014,7 +1014,7 @@ msgid "Issue an API key on EventWatch"
 msgstr ""
 
 #: includes/class-settings.php:399
-msgid "The key you issued in EventWatch under Organization settings › Site connection. Saved keys are hidden."
+msgid "The key you issued in EventWatch under Organizer settings › Site connection. Saved keys are hidden."
 msgstr ""
 
 #: includes/class-settings.php:408
@@ -1181,7 +1181,7 @@ msgid "Couldn’t upload the image to EventWatch. This is retried automatically 
 msgstr ""
 
 #: includes/class-sync-rest.php:246
-msgid "Your organization has reached EventWatch’s limit of images for today. This is retried automatically about once an hour."
+msgid "Your organizer has reached EventWatch’s limit of images for today. This is retried automatically about once an hour."
 msgstr ""
 
 #: includes/class-sync-rest.php:271

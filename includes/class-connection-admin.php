@@ -235,18 +235,18 @@ class Connection_Admin {
 	public static function status_text( $state ) {
 		switch ( $state['status'] ) {
 			case Connection::CONNECTED:
-				/* translators: %s: organization name on EventWatch. */
+				/* translators: %s: organizer name on EventWatch. */
 				return sprintf( __( 'Connected to EventWatch (%s)', 'eventwatch' ), $state['organization'] );
 			case Connection::UNAUTHORIZED:
 				if ( '' !== Connection::fixed_key() ) {
-					return __( 'EventWatch rejected this API key. It may have been revoked, or the person who issued it may have left your organization or stopped being an owner. Ask an owner of your organization to issue a new key under Organization settings › Site connection, then update it in wp-config.php.', 'eventwatch' );
+					return __( 'EventWatch rejected this API key. It may have been revoked, or the person who issued it may have left your organizer or stopped being an admin. Ask an admin of your organizer to issue a new key under Organizer settings › Site connection, then update it in wp-config.php.', 'eventwatch' );
 				}
-				return __( 'EventWatch rejected this API key. It may have been revoked, or the person who issued it may have left your organization or stopped being an owner. Ask an owner of your organization to issue a new key under Organization settings › Site connection, then enter it here.', 'eventwatch' );
+				return __( 'EventWatch rejected this API key. It may have been revoked, or the person who issued it may have left your organizer or stopped being an admin. Ask an admin of your organizer to issue a new key under Organizer settings › Site connection, then enter it here.', 'eventwatch' );
 			case Connection::SUSPENDED:
-				return __( 'Your organization is suspended on EventWatch, so nothing can be sent for now. This isn’t a problem with your API key, so you don’t need to change it. Please contact EventWatch.', 'eventwatch' );
+				return __( 'Your organizer is suspended on EventWatch, so nothing can be sent for now. This isn’t a problem with your API key, so you don’t need to change it. Please contact EventWatch.', 'eventwatch' );
 			case Connection::FORBIDDEN:
 				if ( Connection::is_site_bound( $state ) ) {
-					return __( 'This site is still connected to EventWatch with another API key that hasn’t been revoked, so EventWatch doesn’t accept changes from this key. Revoke the old key under Organization settings › Site connection on EventWatch, then use “Check connection”, and sending resumes.', 'eventwatch' );
+					return __( 'This site is still connected to EventWatch with another API key that hasn’t been revoked, so EventWatch doesn’t accept changes from this key. Revoke the old key under Organizer settings › Site connection on EventWatch, then use “Check connection”, and sending resumes.', 'eventwatch' );
 				}
 				return __( 'EventWatch doesn’t allow this API key to be used for this site. Please contact EventWatch.', 'eventwatch' );
 			case Connection::UNREACHABLE:

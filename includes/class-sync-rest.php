@@ -243,7 +243,7 @@ class Sync_Rest {
 			Sync_Image::ISSUE_UNREADABLE => __( 'The image file couldn’t be read on this site. Choose the image again, or choose another one.', 'eventwatch' ),
 			Sync_Image::ISSUE_REJECTED   => __( 'EventWatch didn’t accept the image. Choose another one.', 'eventwatch' ),
 			Sync_Image::ISSUE_TEMPORARY  => __( 'Couldn’t upload the image to EventWatch. This is retried automatically about once an hour.', 'eventwatch' ),
-			Sync_Image::ISSUE_QUOTA      => __( 'Your organization has reached EventWatch’s limit of images for today. This is retried automatically about once an hour.', 'eventwatch' ),
+			Sync_Image::ISSUE_QUOTA      => __( 'Your organizer has reached EventWatch’s limit of images for today. This is retried automatically about once an hour.', 'eventwatch' ),
 		);
 
 		if ( ! isset( $messages[ $code ] ) ) {

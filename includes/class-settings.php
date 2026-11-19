@@ -396,7 +396,7 @@ class Settings {
 	private static function render_api_key_description( $recommend_constant ) {
 		printf(
 			'<p class="description">%s</p>',
-			esc_html__( 'The key you issued in EventWatch under Organization settings › Site connection. Saved keys are hidden.', 'eventwatch' )
+			esc_html__( 'The key you issued in EventWatch under Organizer settings › Site connection. Saved keys are hidden.', 'eventwatch' )
 		);
 		self::render_consent();
 		if ( ! $recommend_constant ) {

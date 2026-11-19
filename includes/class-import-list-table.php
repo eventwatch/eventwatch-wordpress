@@ -72,7 +72,7 @@ class Import_List_Table extends WP_List_Table {
 	 * @return void
 	 */
 	public function no_items() {
-		esc_html_e( 'There are no posts to import. Posts your organization creates on EventWatch will appear here.', 'eventwatch' );
+		esc_html_e( 'There are no posts to import. Posts your organizer creates on EventWatch will appear here.', 'eventwatch' );
 	}
 
 	/**
