@@ -770,7 +770,7 @@ class Event_Detail_Test extends WP_UnitTestCase {
 	}
 
 	/**
-	 * JS が無いときの CSS は、詳細の CSS に添えて読ませる。head に style を直に書かない。
+	 * JS が動かないときの CSS は、詳細の CSS に添えて読ませる。JS が動いた印は head のインラインのスクリプトが付ける。head に style・script を直に書かない。
 	 */
 	public function test_no_script_css_is_enqueued_inline() {
 		$this->go_to( get_permalink( $this->event() ) );
@@ -780,7 +780,12 @@ class Event_Detail_Test extends WP_UnitTestCase {
 
 		$this->assertTrue( wp_style_is( $handle, 'enqueued' ) );
 		$this->assertContains( Event_Detail::no_script_css(), (array) wp_styles()->get_data( $handle, 'after' ) );
-		$this->assertStringStartsWith( '@media (scripting: none){', Event_Detail::no_script_css() );
+		$this->assertStringStartsWith( 'html:not(.eventwatch-js) [data-eventwatch-menu-trigger],html:not(.eventwatch-js) [data-eventwatch-dialog-open],', Event_Detail::no_script_css() );
+		$this->assertStringNotContainsString( '@media', Event_Detail::no_script_css() );
+
+		$this->assertTrue( wp_script_is( Event_Detail::SCRIPT_FLAG_HANDLE, 'enqueued' ) );
+		$this->assertFalse( wp_scripts()->get_data( Event_Detail::SCRIPT_FLAG_HANDLE, 'group' ), 'body の後ろに回ると、印が付く前にメニューの形が描かれる' );
+		$this->assertContains( 'document.documentElement.classList.add("eventwatch-js");', (array) wp_scripts()->get_data( Event_Detail::SCRIPT_FLAG_HANDLE, 'after' ) );
 
 		ob_start();
 		Event_Detail::print_head();

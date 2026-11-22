@@ -24,6 +24,12 @@ class Event_Detail {
 	const ACTIONS_BLOCK = 'eventwatch/event-actions';
 
 	/**
+	 * JS が動いた印。詳細のページの head で html に付ける。
+	 */
+	const SCRIPT_FLAG_HANDLE = 'eventwatch-detail-script-flag';
+	const SCRIPT_FLAG_CLASS  = 'eventwatch-js';
+
+	/**
 	 * WordPress 6.7 の register_block_template は名前に _ を許さないので、投稿タイプのキーをそのまま使えない。
 	 * 本体の階層には single_template_hierarchy で足す。
 	 */
@@ -235,17 +241,29 @@ class Event_Detail {
 		$handle = generate_block_asset_handle( self::FIELD_BLOCK, 'style' );
 		wp_enqueue_style( $handle );
 		wp_add_inline_style( $handle, self::no_script_css() );
+
+		// head の中で body より前に同期に動くので、メニューの要素が読まれる時点で印は付いている。
+		wp_register_script( self::SCRIPT_FLAG_HANDLE, false, array(), '1', false );
+		wp_enqueue_script( self::SCRIPT_FLAG_HANDLE );
+		wp_add_inline_script( self::SCRIPT_FLAG_HANDLE, 'document.documentElement.classList.add("' . self::SCRIPT_FLAG_CLASS . '");' );
 	}
 
 	/**
-	 * JS が無いときは、メニューを開かずに中のリンクをそのまま見せる。
+	 * JS が動かないときは、メニューを開かずに中のリンクをそのまま見せる。
 	 *
-	 * テーマの CSS が後から読まれても勝つよう !important を付ける。scripting を解さない古いブラウザーは、JS を切っているときだけメニューが開けない。
+	 * JS が動いた印は、head のインラインのスクリプトが html に付けるクラス。ブラウザーで JS を切ったときも、拡張機能や CSP がスクリプトだけを止めたときも、印が付かないのでこの CSS が当たる。テーマの CSS が後から読まれても勝つよう !important を付ける。
 	 *
 	 * @return string
 	 */
 	public static function no_script_css() {
-		return '@media (scripting: none){[data-eventwatch-menu-trigger],[data-eventwatch-dialog-open],.eventwatch-detail__copy,.eventwatch-detail__close{display:none!important}.eventwatch-detail__menu[hidden]{display:flex!important;position:static!important;border:0!important;background:none!important;color:inherit!important}.eventwatch-detail__dialog{display:flex!important;flex-direction:column;gap:1rem;position:static!important;width:auto!important;margin:0!important;padding:0!important;background:none!important;color:inherit!important}}';
+		$scope     = 'html:not(.' . self::SCRIPT_FLAG_CLASS . ') ';
+		$selectors = static function ( array $parts ) use ( $scope ) {
+			return $scope . implode( ',' . $scope, $parts );
+		};
+
+		return $selectors( array( '[data-eventwatch-menu-trigger]', '[data-eventwatch-dialog-open]', '.eventwatch-detail__copy', '.eventwatch-detail__close' ) ) . '{display:none!important}'
+			. $selectors( array( '.eventwatch-detail__menu[hidden]' ) ) . '{display:flex!important;position:static!important;border:0!important;background:none!important;color:inherit!important}'
+			. $selectors( array( '.eventwatch-detail__dialog' ) ) . '{display:flex!important;flex-direction:column;gap:1rem;position:static!important;width:auto!important;margin:0!important;padding:0!important;background:none!important;color:inherit!important}';
 	}
 
 	/**

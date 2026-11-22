@@ -577,9 +577,11 @@ class Event_List_Test extends WP_UnitTestCase {
 		$image = Event_List::item_data( get_post( $post ) )['image'];
 		$this->assertStringContainsString( 'srcset=', $image, '本体が srcset を付けていないと、残ることを確かめられない' );
 		$this->assertSame( $image, wp_kses( $image, $allowed ) );
-		$this->assertStringContainsString( 'eventwatch-event__media"><img', $this->render_only( $post ) );
+		$card = $this->render_only( $post );
+		$this->assertStringContainsString( 'eventwatch-event__media"><img', $card );
+		$this->assertMatchesRegularExpression( '/eventwatch-event__media"><img [^>]*srcset="[^"]+" sizes="[^"]+"/', $card, 'テンプレートが投稿の許可で包むと srcset と sizes が消える' );
 
-		$picture = '<picture><source srcset="a.webp 1x" type="image/webp" media="(min-width: 1px)"><img src="a.jpg" sizes="100vw" decoding="async" fetchpriority="high" alt=""></picture>';
+		$picture = '<picture class="p" id="x"><source srcset="a.webp 1x" type="image/webp" media="(min-width: 1px)"><img src="a.jpg" sizes="100vw" decoding="async" fetchpriority="high" alt=""></picture><noscript><img src="a.jpg" alt=""></noscript>';
 		$this->assertSame( $picture, wp_kses( $picture, $allowed ) );
 
 		$hostile = wp_kses( '<img src="a.jpg" alt="" onerror="alert(1)"><script>alert(1)</script>', $allowed );
