@@ -757,6 +757,26 @@ class Event_Detail_Test extends WP_UnitTestCase {
 	}
 
 	/**
+	 * JS が無いときの CSS は、詳細の CSS に添えて読ませる。head に style を直に書かない。
+	 */
+	public function test_no_script_css_is_enqueued_inline() {
+		$this->go_to( get_permalink( $this->event() ) );
+		$handle = generate_block_asset_handle( 'eventwatch/event-field', 'style' );
+
+		Event_Detail::enqueue_styles();
+
+		$this->assertTrue( wp_style_is( $handle, 'enqueued' ) );
+		$this->assertContains( Event_Detail::no_script_css(), (array) wp_styles()->get_data( $handle, 'after' ) );
+		$this->assertStringStartsWith( '@media (scripting: none){', Event_Detail::no_script_css() );
+
+		ob_start();
+		Event_Detail::print_head();
+		$head = (string) ob_get_clean();
+		$this->assertStringNotContainsString( '<style', $head );
+		$this->assertStringNotContainsString( '<noscript', $head );
+	}
+
+	/**
 	 * イベント以外のページの head には何も出さない。
 	 */
 	public function test_head_is_empty_elsewhere() {

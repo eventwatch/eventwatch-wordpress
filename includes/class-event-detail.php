@@ -221,7 +221,20 @@ class Event_Detail {
 		}
 
 		wp_enqueue_style( generate_block_asset_handle( Event_List_Block::NAME, 'style' ) );
-		wp_enqueue_style( generate_block_asset_handle( self::FIELD_BLOCK, 'style' ) );
+		$handle = generate_block_asset_handle( self::FIELD_BLOCK, 'style' );
+		wp_enqueue_style( $handle );
+		wp_add_inline_style( $handle, self::no_script_css() );
+	}
+
+	/**
+	 * JS が無いときは、メニューを開かずに中のリンクをそのまま見せる。
+	 *
+	 * テーマの CSS が後から読まれても勝つよう !important を付ける。scripting を解さない古いブラウザーは、JS を切っているときだけメニューが開けない。
+	 *
+	 * @return string
+	 */
+	public static function no_script_css() {
+		return '@media (scripting: none){[data-eventwatch-menu-trigger],[data-eventwatch-dialog-open],.eventwatch-detail__copy,.eventwatch-detail__close{display:none!important}.eventwatch-detail__menu[hidden]{display:flex!important;position:static!important;border:0!important;background:none!important;color:inherit!important}.eventwatch-detail__dialog{display:flex!important;flex-direction:column;gap:1rem;position:static!important;width:auto!important;margin:0!important;padding:0!important;background:none!important;color:inherit!important}}';
 	}
 
 	/**
@@ -760,9 +773,6 @@ class Event_Detail {
 			return;
 		}
 
-		// JS が無いときは、メニューを開かずに中のリンクをそのまま見せる。CSS は head のこの後で読まれるので !important を付ける。
-		echo '<noscript><style>[data-eventwatch-menu-trigger],[data-eventwatch-dialog-open],.eventwatch-detail__copy,.eventwatch-detail__close{display:none!important}.eventwatch-detail__menu[hidden]{display:flex!important;position:static!important;border:0!important;background:none!important;color:inherit!important}.eventwatch-detail__dialog{display:flex!important;flex-direction:column;gap:1rem;position:static!important;width:auto!important;margin:0!important;padding:0!important;background:none!important;color:inherit!important}</style></noscript>' . "\n";
-
 		$post = get_queried_object();
 		if ( ! $post instanceof WP_Post || post_password_required( $post ) ) {
 			return;
@@ -788,8 +798,8 @@ class Event_Detail {
 		if ( apply_filters( 'eventwatch_output_json_ld', true, $post ) ) {
 			$graph = self::json_ld( $post );
 			if ( $graph ) {
-				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- JSON_HEX_TAG で script を閉じさせない。
-				echo '<script type="application/ld+json">' . self::encode_json_ld( $graph ) . '</script>' . "\n";
+				// JSON_HEX_TAG で script を閉じさせない。
+				wp_print_inline_script_tag( self::encode_json_ld( $graph ), array( 'type' => 'application/ld+json' ) );
 			}
 		}
 	}
