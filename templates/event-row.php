@@ -29,7 +29,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<p class="eventwatch-event__venue"><?php echo esc_html( implode( _x( ' · ', 'separator between the venue and the category', 'eventwatch' ), array_filter( array( $args['venue'], $args['category'] ) ) ) ); ?></p>
 	</div>
 	<?php if ( '' !== $args['image'] ) : ?>
-		<?php // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- 本体の get_the_post_thumbnail が作った HTML。 ?>
-		<div class="eventwatch-event__media"><?php echo $args['image']; ?></div>
+		<div class="eventwatch-event__media"><?php echo wp_kses( $args['image'], \EventWatch\Event_List::image_allowed_html() ); ?></div>
 	<?php endif; ?>
 </a>

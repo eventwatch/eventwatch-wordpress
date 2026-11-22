@@ -566,6 +566,29 @@ class Event_List_Test extends WP_UnitTestCase {
 	}
 
 	/**
+	 * テンプレートが画像を出すときの wp_kses は、本体の画像の属性と picture を残し、スクリプトは落とす。
+	 */
+	public function test_image_allowed_html_keeps_responsive_image() {
+		$attachment = self::factory()->attachment->create_upload_object( DIR_TESTDATA . '/images/canola.jpg' );
+		$post       = $this->event( 'responsive', $this->future() );
+		set_post_thumbnail( $post, $attachment );
+		$allowed = Event_List::image_allowed_html();
+
+		$image = Event_List::item_data( get_post( $post ) )['image'];
+		$this->assertStringContainsString( 'srcset=', $image, '本体が srcset を付けていないと、残ることを確かめられない' );
+		$this->assertSame( $image, wp_kses( $image, $allowed ) );
+		$this->assertStringContainsString( 'eventwatch-event__media"><img', $this->render_only( $post ) );
+
+		$picture = '<picture><source srcset="a.webp 1x" type="image/webp" media="(min-width: 1px)"><img src="a.jpg" sizes="100vw" decoding="async" fetchpriority="high" alt=""></picture>';
+		$this->assertSame( $picture, wp_kses( $picture, $allowed ) );
+
+		$hostile = wp_kses( '<img src="a.jpg" alt="" onerror="alert(1)"><script>alert(1)</script>', $allowed );
+		$this->assertStringStartsWith( '<img src="a.jpg" alt="">', $hostile );
+		$this->assertStringNotContainsString( 'onerror', $hostile );
+		$this->assertStringNotContainsString( '<script', $hostile );
+	}
+
+	/**
 	 * 指定したイベントだけが出る条件で描く。
 	 *
 	 * @param int $post_id 投稿の ID。

@@ -579,6 +579,42 @@ class Event_List {
 	}
 
 	/**
+	 * テンプレートがアイキャッチ画像を出すときに wp_kses へ渡す、許す要素と属性。
+	 *
+	 * 投稿の許可は img の srcset・sizes・decoding・fetchpriority と picture・source を持たず、本体の画像から srcset と sizes を消す。これらを足して、本体の画像と、フィルターで picture に包まれた画像をそのまま通す。
+	 *
+	 * @return array<string, array<string, bool>>
+	 */
+	public static function image_allowed_html() {
+		$allowed = wp_kses_allowed_html( 'post' );
+		$sources = array(
+			'srcset' => true,
+			'sizes'  => true,
+			'width'  => true,
+			'height' => true,
+		);
+
+		$allowed['img']     = array_merge(
+			isset( $allowed['img'] ) ? $allowed['img'] : array(),
+			$sources,
+			array(
+				'decoding'      => true,
+				'fetchpriority' => true,
+			)
+		);
+		$allowed['picture'] = array();
+		$allowed['source']  = array_merge(
+			$sources,
+			array(
+				'type'  => true,
+				'media' => true,
+			)
+		);
+
+		return $allowed;
+	}
+
+	/**
 	 * アイキャッチ画像の HTML。無ければ空。
 	 *
 	 * @param WP_Post $post イベント。

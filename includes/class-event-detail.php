@@ -820,8 +820,16 @@ class Event_Detail {
 		 * @param WP_Post $post   イベント。
 		 */
 		if ( apply_filters( 'eventwatch_output_meta_tags', ! self::has_seo_plugin(), $post ) ) {
-			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- meta_tags の中で値ごとにエスケープしている。
-			echo self::meta_tags( $post );
+			echo wp_kses(
+				self::meta_tags( $post ),
+				array(
+					'meta' => array(
+						'name'     => true,
+						'property' => true,
+						'content'  => true,
+					),
+				)
+			);
 		}
 
 		/**

@@ -34,6 +34,11 @@ class Connection_Admin {
 	const DOCS_WEB = 'https://docs.eventwatch.app';
 
 	/**
+	 * 設定画面へのリンクを出すときに wp_kses へ渡す許可。
+	 */
+	const LINK_HTML = array( 'a' => array( 'href' => true ) );
+
+	/**
 	 * フックを登録する。
 	 *
 	 * @return void
@@ -204,7 +209,7 @@ class Connection_Admin {
 			printf(
 				'<div class="notice notice-warning"><p>%1$s%2$s</p></div>',
 				esc_html( self::status_text( $state ) ),
-				$on_list ? ' ' . self::settings_link() : '' // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- settings_link() が組み立ての中で escape している。
+				$on_list ? ' ' . wp_kses( self::settings_link(), self::LINK_HTML ) : ''
 			);
 		}
 	}
@@ -340,7 +345,7 @@ class Connection_Admin {
 		printf(
 			'<div class="notice notice-info"><p>%1$s %2$s</p><form action="%3$s" method="post"><p><input type="hidden" name="action" value="%4$s">',
 			esc_html__( 'To list these events on EventWatch, enter an EventWatch API key. Your site works without one.', 'eventwatch' ),
-			self::settings_link(), // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- settings_link() が組み立ての中で escape している。
+			wp_kses( self::settings_link(), self::LINK_HTML ),
 			esc_url( admin_url( 'admin-post.php' ) ),
 			esc_attr( self::ACTION_HIDE )
 		);
@@ -369,7 +374,7 @@ class Connection_Admin {
 		);
 
 		if ( ! $on_settings ) {
-			echo '<p>' . self::settings_link() . '</p></div>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- settings_link() が組み立ての中で escape している。
+			echo '<p>' . wp_kses( self::settings_link(), self::LINK_HTML ) . '</p></div>';
 			return;
 		}
 
