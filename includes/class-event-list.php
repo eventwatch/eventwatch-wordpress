@@ -656,10 +656,7 @@ class Event_List {
 	 * @return string
 	 */
 	public static function without_data_src( $html ) {
-		if ( false === stripos( $html, 'data:' ) ) {
-			return $html;
-		}
-
+		// 生の HTML の文字列では見ない。src="data&#x3A;…" のように文字参照で書いた形も、get_attribute は戻して返す。
 		$tags = new \WP_HTML_Tag_Processor( $html );
 		while ( $tags->next_tag( 'img' ) ) {
 			$src = $tags->get_attribute( 'src' );

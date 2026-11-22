@@ -592,6 +592,9 @@ class Event_List_Test extends WP_UnitTestCase {
 		remove_filter( 'post_thumbnail_html', $lazy );
 		$this->assertStringContainsString( '<img data-src="real.jpg" alt=""><noscript><img src="real.jpg" alt=""></noscript>', $card );
 		$this->assertStringNotContainsString( 'w3.org', $card, 'data: の src を wp_kses に渡すと、外部へのプロトコル相対の URL になる' );
+		$encoded = Event_List::without_data_src( '<IMG SRC=" data&#x3A;image/gif;base64,R0" data-src="r.jpg" alt="">' );
+		$this->assertStringNotContainsStringIgnoringCase( ' src=', $encoded, '文字参照・大文字・先頭の空白でも外す' );
+		$this->assertStringContainsString( 'data-src="r.jpg"', $encoded );
 
 		$hostile = wp_kses( '<img src="a.jpg" alt="" onerror="alert(1)"><script>alert(1)</script>', $allowed );
 		$this->assertStringStartsWith( '<img src="a.jpg" alt="">', $hostile );
