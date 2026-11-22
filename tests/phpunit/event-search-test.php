@@ -38,10 +38,10 @@ class Event_Search_Test extends WP_UnitTestCase {
 		$this->now = new \DateTimeImmutable( 'now', wp_timezone() );
 		$registry  = \WP_Block_Type_Registry::get_instance();
 		if ( ! $registry->is_registered( Event_List_Block::NAME ) ) {
-			register_block_type( dirname( __DIR__, 2 ) . '/build/blocks/event-list' );
+			Event_List_Block::register();
 		}
 		if ( ! $registry->is_registered( Event_Search_Block::NAME ) ) {
-			register_block_type( dirname( __DIR__, 2 ) . '/build/blocks/event-search' );
+			Event_Search_Block::register();
 		}
 		$_GET                   = array();
 		$_SERVER['REQUEST_URI'] = '/search/';
@@ -131,6 +131,15 @@ class Event_Search_Test extends WP_UnitTestCase {
 		$this->reset_instances();
 		preg_match_all( '#<h3 class="eventwatch-event__title">(.*?)</h3>#', $this->render( array( 'perPage' => 24 ) ), $matches );
 		return $matches[1];
+	}
+
+	/**
+	 * 検索のブロックは render.php を使わず、render_callback で描く。
+	 */
+	public function test_block_renders_through_callback() {
+		$block = \WP_Block_Type_Registry::get_instance()->get_registered( Event_Search_Block::NAME );
+
+		$this->assertSame( array( Event_Search_Block::class, 'render_block' ), $block->render_callback );
 	}
 
 	/**

@@ -82,19 +82,7 @@ class Event_Detail {
 	 * @return void
 	 */
 	public static function register() {
-		$build = plugin_dir_path( PLUGIN_FILE ) . 'build/blocks/';
-		// ビルドしていない作業ツリーでも、サイトを壊さない。
-		if ( is_readable( $build . 'event-field/block.json' ) && is_readable( $build . 'event-actions/block.json' ) ) {
-			register_block_type( $build . 'event-field' );
-			register_block_type( $build . 'event-actions' );
-
-			// 操作の列の JS には文言が無い。題と説明は block.json からサーバーが訳す。
-			wp_set_script_translations(
-				generate_block_asset_handle( self::FIELD_BLOCK, 'editorScript' ),
-				'eventwatch',
-				plugin_dir_path( PLUGIN_FILE ) . 'languages'
-			);
-		}
+		self::register_blocks();
 
 		register_block_template(
 			self::TEMPLATE_NAME,
@@ -104,6 +92,29 @@ class Event_Detail {
 				'post_types'  => array( Post_Type::POST_TYPE ),
 				'content'     => self::template_content(),
 			)
+		);
+	}
+
+	/**
+	 * 欄と操作の列のブロックを登録する。テンプレートは二重に登録できないので、ブロックだけを登録し直せるよう分けてある。
+	 *
+	 * @return void
+	 */
+	public static function register_blocks() {
+		$build = plugin_dir_path( PLUGIN_FILE ) . 'build/blocks/';
+		// ビルドしていない作業ツリーでも、サイトを壊さない。
+		if ( ! is_readable( $build . 'event-field/block.json' ) || ! is_readable( $build . 'event-actions/block.json' ) ) {
+			return;
+		}
+
+		register_block_type( $build . 'event-field', array( 'render_callback' => array( self::class, 'render_block' ) ) );
+		register_block_type( $build . 'event-actions', array( 'render_callback' => array( self::class, 'render_actions' ) ) );
+
+		// 操作の列の JS には文言が無い。題と説明は block.json からサーバーが訳す。
+		wp_set_script_translations(
+			generate_block_asset_handle( self::FIELD_BLOCK, 'editorScript' ),
+			'eventwatch',
+			plugin_dir_path( PLUGIN_FILE ) . 'languages'
 		);
 	}
 
@@ -238,16 +249,18 @@ class Event_Detail {
 	}
 
 	/**
-	 * ブロックの描画。
+	 * 欄のブロックの描画。render_callback として本体が呼ぶ。
 	 *
-	 * @param array $attributes ブロックの属性。
-	 * @param mixed $block      ブロック。
+	 * @param array  $attributes ブロックの属性。
+	 * @param string $content    中身（このブロックは持たない）。
+	 * @param mixed  $block      ブロック。
 	 * @return string
 	 */
-	public static function render_block( array $attributes, $block ) {
-		$post_id = isset( $block->context['postId'] ) ? (int) $block->context['postId'] : (int) get_the_ID();
-		$post    = get_post( $post_id );
-		$field   = isset( $attributes['field'] ) ? (string) $attributes['field'] : '';
+	public static function render_block( $attributes, $content, $block ) {
+		$attributes = (array) $attributes;
+		$post_id    = isset( $block->context['postId'] ) ? (int) $block->context['postId'] : (int) get_the_ID();
+		$post       = get_post( $post_id );
+		$field      = isset( $attributes['field'] ) ? (string) $attributes['field'] : '';
 
 		if ( ! $post instanceof WP_Post ) {
 			return '';
@@ -262,6 +275,28 @@ class Event_Detail {
 			'<div %1$s>%2$s</div>',
 			get_block_wrapper_attributes( array( 'class' => 'is-field-' . sanitize_html_class( $field ) ) ),
 			$inner
+		);
+	}
+
+	/**
+	 * 操作の列のブロックの描画。render_callback として本体が呼ぶ。
+	 *
+	 * パスワード保護などで中身が無ければ、空の枠を残さない。
+	 *
+	 * @param array  $attributes ブロックの属性。
+	 * @param string $content    中のブロックが描いた HTML。
+	 * @return string
+	 */
+	public static function render_actions( $attributes, $content ) {
+		if ( '' === trim( (string) $content ) ) {
+			return '';
+		}
+
+		return sprintf(
+			'<div %1$s role="group" aria-label="%2$s">%3$s</div>',
+			get_block_wrapper_attributes(),
+			esc_attr__( 'Event actions', 'eventwatch' ),
+			$content
 		);
 	}
 

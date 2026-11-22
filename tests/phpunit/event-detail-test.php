@@ -37,15 +37,11 @@ class Event_Detail_Test extends WP_UnitTestCase {
 		update_option( 'timezone_string', 'Asia/Tokyo' );
 		$this->set_permalink_structure( '/%postname%/' );
 		$registry = \WP_Block_Type_Registry::get_instance();
-		$build    = dirname( __DIR__, 2 ) . '/build/blocks/';
 		if ( ! $registry->is_registered( Event_List_Block::NAME ) ) {
-			register_block_type( $build . 'event-list' );
+			Event_List_Block::register();
 		}
 		if ( ! $registry->is_registered( Event_Detail::FIELD_BLOCK ) ) {
-			register_block_type( $build . 'event-field' );
-		}
-		if ( ! $registry->is_registered( Event_Detail::ACTIONS_BLOCK ) ) {
-			register_block_type( $build . 'event-actions' );
+			Event_Detail::register_blocks();
 		}
 	}
 
@@ -401,6 +397,23 @@ class Event_Detail_Test extends WP_UnitTestCase {
 		$this->assertStringContainsString( 'is-field-venue wp-block-eventwatch-event-field', $html );
 
 		$this->assertSame( '', trim( do_blocks( '<!-- wp:eventwatch/event-field {"field":"official"} /-->' ) ) );
+	}
+
+	/**
+	 * ブロックは render.php を使わず、render_callback で描く。プラグインのコードで描画の HTML を echo しない。
+	 */
+	public function test_blocks_render_through_callbacks() {
+		$registry = \WP_Block_Type_Registry::get_instance();
+		$expected = array(
+			Event_List_Block::NAME      => array( Event_List_Block::class, 'render_block' ),
+			Event_Detail::FIELD_BLOCK   => array( Event_Detail::class, 'render_block' ),
+			Event_Detail::ACTIONS_BLOCK => array( Event_Detail::class, 'render_actions' ),
+		);
+		foreach ( $expected as $name => $callback ) {
+			$this->assertSame( $callback, $registry->get_registered( $name )->render_callback, $name );
+		}
+
+		$this->assertSame( '', Event_Detail::render_actions( array(), " \n" ) );
 	}
 
 	/**

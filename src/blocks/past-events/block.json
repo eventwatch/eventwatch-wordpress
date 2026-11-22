@@ -53,6 +53,5 @@
 		}
 	},
 	"editorScript": "file:./index.js",
-	"style": "eventwatch-event-list-style",
-	"render": "file:./render.php"
+	"style": "eventwatch-event-list-style"
 }

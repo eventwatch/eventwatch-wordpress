@@ -812,7 +812,7 @@ msgstr "開催予定と終了したイベント"
 msgid "Upcoming events"
 msgstr "開催予定のイベント"
 
-#: includes/class-event-detail.php:379
+#: includes/class-event-detail.php:427
 #: templates/event-card.php:21
 #: templates/event-row.php:22
 msgctxt "label on an event that has ended"
@@ -887,136 +887,136 @@ msgctxt "block keyword"
 msgid "archive"
 msgstr "アーカイブ"
 
-#: build/blocks/event-actions/render.php:24
+#: includes/class-event-detail.php:298
 msgid "Event actions"
 msgstr "このイベントの操作"
 
-#: includes/class-event-detail.php:102
+#: includes/class-event-detail.php:90
 msgid "Single Event"
 msgstr "イベントの詳細"
 
-#: includes/class-event-detail.php:103
+#: includes/class-event-detail.php:91
 msgid "Displays a single event."
 msgstr "1 件のイベントを表示します。"
 
-#: includes/class-event-detail.php:277
+#: includes/class-event-detail.php:325
 msgid "Organizer"
 msgstr "主催"
 
-#: includes/class-event-detail.php:314
+#: includes/class-event-detail.php:362
 msgid " (opens in a new tab)"
 msgstr "（新しいタブで開きます）"
 
-#: includes/class-event-detail.php:343
+#: includes/class-event-detail.php:391
 #: build/blocks/event-field/index.js:1
 msgid "Back to events"
 msgstr "イベント一覧へ戻る"
 
-#: includes/class-event-detail.php:387
+#: includes/class-event-detail.php:435
 msgid "Date & time"
 msgstr "日時"
 
-#: includes/class-event-detail.php:400
+#: includes/class-event-detail.php:448
 msgid "See the description and the official page for how to join."
 msgstr "参加の方法は、本文と公式ページをご覧ください。"
 
-#: includes/class-event-detail.php:408
+#: includes/class-event-detail.php:456
 msgid "Venue"
 msgstr "会場"
 
 #. translators: %s: the venue name or address.
-#: includes/class-event-detail.php:454
+#: includes/class-event-detail.php:502
 #, php-format
 msgid "Venue map: %s"
 msgstr "会場の地図：%s"
 
-#: includes/class-event-detail.php:460
+#: includes/class-event-detail.php:508
 msgid "Open in Google Maps"
 msgstr "Google マップで開く"
 
-#: includes/class-event-detail.php:470
+#: includes/class-event-detail.php:518
 msgid "Open in OpenStreetMap"
 msgstr "OpenStreetMap で開く"
 
-#: includes/class-event-detail.php:532
+#: includes/class-event-detail.php:580
 msgid "Download iCal (.ics)"
 msgstr "iCal（.ics）をダウンロード"
 
-#: includes/class-event-detail.php:535
+#: includes/class-event-detail.php:583
 msgid "Google Calendar"
 msgstr "Google カレンダー"
 
-#: includes/class-event-detail.php:549
-#: includes/class-event-detail.php:550
+#: includes/class-event-detail.php:597
+#: includes/class-event-detail.php:598
 #: build/blocks/event-field/index.js:1
 msgid "Add to calendar"
 msgstr "カレンダーに追加"
 
-#: includes/class-event-detail.php:604
+#: includes/class-event-detail.php:652
 #: build/blocks/event-field/index.js:1
 msgctxt "mark an event you are interested in"
 msgid "Save"
 msgstr "気になる"
 
-#: includes/class-event-detail.php:608
+#: includes/class-event-detail.php:656
 msgid "Get a reminder in the app"
 msgstr "開催前にアプリでお知らせします"
 
-#: includes/class-event-detail.php:609
+#: includes/class-event-detail.php:657
 msgid "Close"
 msgstr "閉じる"
 
-#: includes/class-event-detail.php:611
+#: includes/class-event-detail.php:659
 msgid "Save this event in the EventWatch app, and we’ll send you a notification before it starts so you don’t forget."
 msgstr "EventWatch のアプリで気になるに入れると、行きたいイベントを忘れないよう、開催前に通知でお知らせします。"
 
-#: includes/class-event-detail.php:612
+#: includes/class-event-detail.php:660
 msgid "Open in app"
 msgstr "アプリで開く"
 
-#: includes/class-event-detail.php:614
+#: includes/class-event-detail.php:662
 msgid "Don’t have the app? Get it here."
 msgstr "アプリを入れていないときは、ここから入手できます。"
 
-#: includes/class-event-detail.php:615
+#: includes/class-event-detail.php:663
 msgid "Get it on the App Store"
 msgstr "App Store で入手"
 
-#: includes/class-event-detail.php:615
+#: includes/class-event-detail.php:663
 msgid "Get it on Google Play"
 msgstr "Google Play で入手"
 
-#: includes/class-event-detail.php:634
+#: includes/class-event-detail.php:682
 msgid "Share on X"
 msgstr "X で共有"
 
-#: includes/class-event-detail.php:644
+#: includes/class-event-detail.php:692
 msgid "Send on LINE"
 msgstr "LINE で送る"
 
-#: includes/class-event-detail.php:648
+#: includes/class-event-detail.php:696
 msgid "Share on Facebook"
 msgstr "Facebook で共有"
 
-#: includes/class-event-detail.php:656
+#: includes/class-event-detail.php:704
 msgid "Copy link"
 msgstr "リンクをコピー"
 
-#: includes/class-event-detail.php:672
+#: includes/class-event-detail.php:720
 msgid "Link copied"
 msgstr "リンクをコピーしました"
 
-#: includes/class-event-detail.php:673
+#: includes/class-event-detail.php:721
 msgid "The link could not be copied."
 msgstr "リンクをコピーできませんでした。"
 
-#: includes/class-event-detail.php:677
-#: includes/class-event-detail.php:678
+#: includes/class-event-detail.php:725
+#: includes/class-event-detail.php:726
 #: build/blocks/event-field/index.js:1
 msgid "Share"
 msgstr "共有"
 
-#: includes/class-event-detail.php:699
+#: includes/class-event-detail.php:747
 #: build/blocks/event-field/index.js:1
 msgid "Visit official page"
 msgstr "公式ページを見る"

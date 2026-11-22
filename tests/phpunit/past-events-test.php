@@ -29,12 +29,11 @@ class Past_Events_Test extends WP_UnitTestCase {
 		update_option( 'timezone_string', 'Asia/Tokyo' );
 		Event_List::reset_rendered();
 		$registry = \WP_Block_Type_Registry::get_instance();
-		$build    = dirname( __DIR__, 2 ) . '/build/blocks/';
 		if ( ! $registry->is_registered( Event_List_Block::NAME ) ) {
-			register_block_type( $build . 'event-list' );
+			Event_List_Block::register();
 		}
 		if ( ! $registry->is_registered( Past_Events_Block::NAME ) ) {
-			register_block_type( $build . 'past-events' );
+			Past_Events_Block::register();
 		}
 	}
 
@@ -139,6 +138,15 @@ class Past_Events_Test extends WP_UnitTestCase {
 				'innerContent' => array(),
 			)
 		);
+	}
+
+	/**
+	 * 過去のイベントのブロックは render.php を使わず、render_callback で描く。
+	 */
+	public function test_block_renders_through_callback() {
+		$block = \WP_Block_Type_Registry::get_instance()->get_registered( Past_Events_Block::NAME );
+
+		$this->assertSame( array( Past_Events_Block::class, 'render_block' ), $block->render_callback );
 	}
 
 	/**

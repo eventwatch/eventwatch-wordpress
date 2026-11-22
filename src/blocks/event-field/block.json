@@ -39,6 +39,5 @@
 	},
 	"editorScript": "file:./index.js",
 	"viewScriptModule": "file:./view.js",
-	"style": [ "file:./style-index.css", "eventwatch-event-list-style" ],
-	"render": "file:./render.php"
+	"style": [ "file:./style-index.css", "eventwatch-event-list-style" ]
 }

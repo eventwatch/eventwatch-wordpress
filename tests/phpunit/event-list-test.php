@@ -35,7 +35,7 @@ class Event_List_Test extends WP_UnitTestCase {
 		$this->now = new \DateTimeImmutable( 'now', wp_timezone() );
 		Event_List::reset_rendered();
 		if ( ! \WP_Block_Type_Registry::get_instance()->is_registered( Event_List_Block::NAME ) ) {
-			register_block_type( dirname( __DIR__, 2 ) . '/build/blocks/event-list' );
+			Event_List_Block::register();
 		}
 	}
 
