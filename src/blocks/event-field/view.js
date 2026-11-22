@@ -150,6 +150,10 @@ function setupDialog( opener ) {
 	} );
 }
 
+// JS が動かないときの CSS（Event_Detail::no_script_css）を外す印。head のインラインが CSP などで止まっても、
+// このスクリプトが動いてメニューの項目を tabindex="-1" にするなら、メニューの形に切り替えないとリンクへ Tab で届かない。
+document.documentElement.classList.add( 'eventwatch-js' );
+
 document.querySelectorAll( '[data-eventwatch-menu]' ).forEach( ( root ) => {
 	const control = setupMenu( root );
 	if ( ! control ) {
