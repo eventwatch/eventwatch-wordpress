@@ -30,7 +30,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<span class="eventwatch-event__category"><?php echo esc_html( $args['category'] ); ?></span>
 	<?php endif; ?>
 	<?php if ( '' !== $args['image'] ) : ?>
-		<?php // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- 本体の get_the_post_thumbnail が作った HTML。 ?>
-		<div class="eventwatch-event__media"><?php echo $args['image']; ?></div>
+		<div class="eventwatch-event__media"><?php echo wp_kses( $args['image'], \EventWatch\Event_List::image_allowed_html() ); ?></div>
 	<?php endif; ?>
 </a>

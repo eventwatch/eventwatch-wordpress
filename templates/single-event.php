@@ -16,7 +16,7 @@ get_header();
 
 while ( have_posts() ) {
 	the_post();
-	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- ブロックの描画の中で値ごとにエスケープしている。
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- the_content と同じく、本体がブロックを描いた HTML。各ブロックは値ごとにエスケープしている。地図の iframe・SVG・dialog を含み、wp_kses で包むと壊れる。
 	echo do_blocks( \EventWatch\Event_Detail::default_content( 'article' ) );
 }
 

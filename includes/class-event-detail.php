@@ -24,6 +24,12 @@ class Event_Detail {
 	const ACTIONS_BLOCK = 'eventwatch/event-actions';
 
 	/**
+	 * JS が動いた印。詳細のページの head で html に付ける。
+	 */
+	const SCRIPT_FLAG_HANDLE = 'eventwatch-detail-script-flag';
+	const SCRIPT_FLAG_CLASS  = 'eventwatch-js';
+
+	/**
 	 * WordPress 6.7 の register_block_template は名前に _ を許さないので、投稿タイプのキーをそのまま使えない。
 	 * 本体の階層には single_template_hierarchy で足す。
 	 */
@@ -82,19 +88,7 @@ class Event_Detail {
 	 * @return void
 	 */
 	public static function register() {
-		$build = plugin_dir_path( PLUGIN_FILE ) . 'build/blocks/';
-		// ビルドしていない作業ツリーでも、サイトを壊さない。
-		if ( is_readable( $build . 'event-field/block.json' ) && is_readable( $build . 'event-actions/block.json' ) ) {
-			register_block_type( $build . 'event-field' );
-			register_block_type( $build . 'event-actions' );
-
-			// 操作の列の JS には文言が無い。題と説明は block.json からサーバーが訳す。
-			wp_set_script_translations(
-				generate_block_asset_handle( self::FIELD_BLOCK, 'editorScript' ),
-				'eventwatch',
-				plugin_dir_path( PLUGIN_FILE ) . 'languages'
-			);
-		}
+		self::register_blocks();
 
 		register_block_template(
 			self::TEMPLATE_NAME,
@@ -104,6 +98,29 @@ class Event_Detail {
 				'post_types'  => array( Post_Type::POST_TYPE ),
 				'content'     => self::template_content(),
 			)
+		);
+	}
+
+	/**
+	 * 欄と操作の列のブロックを登録する。テンプレートは二重に登録できないので、ブロックだけを登録し直せるよう分けてある。
+	 *
+	 * @return void
+	 */
+	public static function register_blocks() {
+		$build = plugin_dir_path( PLUGIN_FILE ) . 'build/blocks/';
+		// ビルドしていない作業ツリーでも、サイトを壊さない。
+		if ( ! is_readable( $build . 'event-field/block.json' ) || ! is_readable( $build . 'event-actions/block.json' ) ) {
+			return;
+		}
+
+		register_block_type( $build . 'event-field', array( 'render_callback' => array( self::class, 'render_block' ) ) );
+		register_block_type( $build . 'event-actions', array( 'render_callback' => array( self::class, 'render_actions' ) ) );
+
+		// 操作の列の JS には文言が無い。題と説明は block.json からサーバーが訳す。
+		wp_set_script_translations(
+			generate_block_asset_handle( self::FIELD_BLOCK, 'editorScript' ),
+			'eventwatch',
+			plugin_dir_path( PLUGIN_FILE ) . 'languages'
 		);
 	}
 
@@ -221,20 +238,47 @@ class Event_Detail {
 		}
 
 		wp_enqueue_style( generate_block_asset_handle( Event_List_Block::NAME, 'style' ) );
-		wp_enqueue_style( generate_block_asset_handle( self::FIELD_BLOCK, 'style' ) );
+		$handle = generate_block_asset_handle( self::FIELD_BLOCK, 'style' );
+		wp_enqueue_style( $handle );
+		wp_add_inline_style( $handle, self::no_script_css() );
+
+		// head の中で body より前に同期に動くので、メニューの要素が読まれる時点で印は付いている。
+		wp_register_script( self::SCRIPT_FLAG_HANDLE, false, array(), '1', false );
+		wp_enqueue_script( self::SCRIPT_FLAG_HANDLE );
+		wp_add_inline_script( self::SCRIPT_FLAG_HANDLE, 'document.documentElement.classList.add("' . self::SCRIPT_FLAG_CLASS . '");' );
 	}
 
 	/**
-	 * ブロックの描画。
+	 * JS が動かないときは、メニューを開かずに中のリンクをそのまま見せる。
 	 *
-	 * @param array $attributes ブロックの属性。
-	 * @param mixed $block      ブロック。
+	 * JS が動いた印は html のクラス。head のインラインのスクリプトが body より前に付け、メニューのスクリプト（view.js）も動いたときに付ける。ブラウザーで JS を切ったときも、拡張機能や CSP がスクリプトを全部止めたときも、印が付かないのでこの CSS が当たる。インラインだけが止まったときは、view.js が付けるまでこの CSS が当たる。テーマの CSS が後から読まれても勝つよう !important を付ける。
+	 *
 	 * @return string
 	 */
-	public static function render_block( array $attributes, $block ) {
-		$post_id = isset( $block->context['postId'] ) ? (int) $block->context['postId'] : (int) get_the_ID();
-		$post    = get_post( $post_id );
-		$field   = isset( $attributes['field'] ) ? (string) $attributes['field'] : '';
+	public static function no_script_css() {
+		$scope     = 'html:not(.' . self::SCRIPT_FLAG_CLASS . ') ';
+		$selectors = static function ( array $parts ) use ( $scope ) {
+			return $scope . implode( ',' . $scope, $parts );
+		};
+
+		return $selectors( array( '[data-eventwatch-menu-trigger]', '[data-eventwatch-dialog-open]', '.eventwatch-detail__copy', '.eventwatch-detail__close' ) ) . '{display:none!important}'
+			. $selectors( array( '.eventwatch-detail__menu[hidden]' ) ) . '{display:flex!important;position:static!important;border:0!important;background:none!important;color:inherit!important}'
+			. $selectors( array( '.eventwatch-detail__dialog' ) ) . '{display:flex!important;flex-direction:column;gap:1rem;position:static!important;width:auto!important;margin:0!important;padding:0!important;background:none!important;color:inherit!important}';
+	}
+
+	/**
+	 * 欄のブロックの描画。render_callback として本体が呼ぶ。
+	 *
+	 * @param array  $attributes ブロックの属性。
+	 * @param string $content    中身（このブロックは持たない）。
+	 * @param mixed  $block      ブロック。
+	 * @return string
+	 */
+	public static function render_block( $attributes, $content, $block ) {
+		$attributes = (array) $attributes;
+		$post_id    = isset( $block->context['postId'] ) ? (int) $block->context['postId'] : (int) get_the_ID();
+		$post       = get_post( $post_id );
+		$field      = isset( $attributes['field'] ) ? (string) $attributes['field'] : '';
 
 		if ( ! $post instanceof WP_Post ) {
 			return '';
@@ -249,6 +293,28 @@ class Event_Detail {
 			'<div %1$s>%2$s</div>',
 			get_block_wrapper_attributes( array( 'class' => 'is-field-' . sanitize_html_class( $field ) ) ),
 			$inner
+		);
+	}
+
+	/**
+	 * 操作の列のブロックの描画。render_callback として本体が呼ぶ。
+	 *
+	 * パスワード保護などで中身が無ければ、空の枠を残さない。
+	 *
+	 * @param array  $attributes ブロックの属性。
+	 * @param string $content    中のブロックが描いた HTML。
+	 * @return string
+	 */
+	public static function render_actions( $attributes, $content ) {
+		if ( '' === trim( (string) $content ) ) {
+			return '';
+		}
+
+		return sprintf(
+			'<div %1$s role="group" aria-label="%2$s">%3$s</div>',
+			get_block_wrapper_attributes(),
+			esc_attr__( 'Event actions', 'eventwatch' ),
+			$content
 		);
 	}
 
@@ -760,9 +826,6 @@ class Event_Detail {
 			return;
 		}
 
-		// JS が無いときは、メニューを開かずに中のリンクをそのまま見せる。CSS は head のこの後で読まれるので !important を付ける。
-		echo '<noscript><style>[data-eventwatch-menu-trigger],[data-eventwatch-dialog-open],.eventwatch-detail__copy,.eventwatch-detail__close{display:none!important}.eventwatch-detail__menu[hidden]{display:flex!important;position:static!important;border:0!important;background:none!important;color:inherit!important}.eventwatch-detail__dialog{display:flex!important;flex-direction:column;gap:1rem;position:static!important;width:auto!important;margin:0!important;padding:0!important;background:none!important;color:inherit!important}</style></noscript>' . "\n";
-
 		$post = get_queried_object();
 		if ( ! $post instanceof WP_Post || post_password_required( $post ) ) {
 			return;
@@ -775,8 +838,16 @@ class Event_Detail {
 		 * @param WP_Post $post   イベント。
 		 */
 		if ( apply_filters( 'eventwatch_output_meta_tags', ! self::has_seo_plugin(), $post ) ) {
-			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- meta_tags の中で値ごとにエスケープしている。
-			echo self::meta_tags( $post );
+			echo wp_kses(
+				self::meta_tags( $post ),
+				array(
+					'meta' => array(
+						'name'     => true,
+						'property' => true,
+						'content'  => true,
+					),
+				)
+			);
 		}
 
 		/**
@@ -788,8 +859,8 @@ class Event_Detail {
 		if ( apply_filters( 'eventwatch_output_json_ld', true, $post ) ) {
 			$graph = self::json_ld( $post );
 			if ( $graph ) {
-				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- JSON_HEX_TAG で script を閉じさせない。
-				echo '<script type="application/ld+json">' . self::encode_json_ld( $graph ) . '</script>' . "\n";
+				// JSON_HEX_TAG で script を閉じさせない。
+				wp_print_inline_script_tag( self::encode_json_ld( $graph ), array( 'type' => 'application/ld+json' ) );
 			}
 		}
 	}

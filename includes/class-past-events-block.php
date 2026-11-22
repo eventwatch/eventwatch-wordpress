@@ -33,13 +33,23 @@ class Past_Events_Block {
 			return;
 		}
 
-		register_block_type( $dir );
+		register_block_type( $dir, array( 'render_callback' => array( self::class, 'render_block' ) ) );
 
 		wp_set_script_translations(
 			generate_block_asset_handle( self::NAME, 'editorScript' ),
 			'eventwatch',
 			plugin_dir_path( PLUGIN_FILE ) . 'languages'
 		);
+	}
+
+	/**
+	 * ブロックを描く。render_callback として本体が呼ぶ。
+	 *
+	 * @param array $attributes ブロックの属性。
+	 * @return string
+	 */
+	public static function render_block( $attributes ) {
+		return Event_List::render( (array) $attributes, Event_List::SCOPE_PAST );
 	}
 
 	/**

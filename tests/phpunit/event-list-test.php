@@ -35,7 +35,7 @@ class Event_List_Test extends WP_UnitTestCase {
 		$this->now = new \DateTimeImmutable( 'now', wp_timezone() );
 		Event_List::reset_rendered();
 		if ( ! \WP_Block_Type_Registry::get_instance()->is_registered( Event_List_Block::NAME ) ) {
-			register_block_type( dirname( __DIR__, 2 ) . '/build/blocks/event-list' );
+			Event_List_Block::register();
 		}
 	}
 
@@ -563,6 +563,43 @@ class Event_List_Test extends WP_UnitTestCase {
 		$this->assertSame( '', Event_List::item_data( get_post( $third ) )['image'] );
 
 		$this->assertStringNotContainsString( 'eventwatch-event__media', $this->render_only( $third ) );
+	}
+
+	/**
+	 * テンプレートが画像を出すときの wp_kses は、本体の画像の属性と picture を残し、スクリプトは落とす。
+	 */
+	public function test_image_allowed_html_keeps_responsive_image() {
+		$attachment = self::factory()->attachment->create_upload_object( DIR_TESTDATA . '/images/canola.jpg' );
+		$post       = $this->event( 'responsive', $this->future() );
+		set_post_thumbnail( $post, $attachment );
+		$allowed = Event_List::image_allowed_html();
+
+		$image = Event_List::item_data( get_post( $post ) )['image'];
+		$this->assertStringContainsString( 'srcset=', $image, '本体が srcset を付けていないと、残ることを確かめられない' );
+		$this->assertSame( $image, wp_kses( $image, $allowed ) );
+		$card = $this->render_only( $post );
+		$this->assertStringContainsString( 'eventwatch-event__media"><img', $card );
+		$this->assertMatchesRegularExpression( '/eventwatch-event__media"><img [^>]*srcset="[^"]+" sizes="[^"]+"/', $card, 'テンプレートが投稿の許可で包むと srcset と sizes が消える' );
+
+		$picture = '<picture class="p" id="x"><source srcset="a.webp 1x" type="image/webp" media="(min-width: 1px)"><img src="a.jpg" sizes="100vw" decoding="async" fetchpriority="high" alt=""></picture><noscript><img src="a.jpg" alt=""></noscript>';
+		$this->assertSame( $picture, wp_kses( $picture, $allowed ) );
+
+		$lazy = static function () {
+			return '<img src="data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%3E%3C/svg%3E" data-src="real.jpg" alt=""><noscript><img src="real.jpg" alt=""></noscript>';
+		};
+		add_filter( 'post_thumbnail_html', $lazy );
+		$card = $this->render_only( $post );
+		remove_filter( 'post_thumbnail_html', $lazy );
+		$this->assertStringContainsString( '<img data-src="real.jpg" alt=""><noscript><img src="real.jpg" alt=""></noscript>', $card );
+		$this->assertStringNotContainsString( 'w3.org', $card, 'data: の src を wp_kses に渡すと、外部へのプロトコル相対の URL になる' );
+		$encoded = Event_List::without_data_src( '<IMG SRC=" data&#x3A;image/gif;base64,R0" data-src="r.jpg" alt="">' );
+		$this->assertStringNotContainsStringIgnoringCase( ' src=', $encoded, '文字参照・大文字・先頭の空白でも外す' );
+		$this->assertStringContainsString( 'data-src="r.jpg"', $encoded );
+
+		$hostile = wp_kses( '<img src="a.jpg" alt="" onerror="alert(1)"><script>alert(1)</script>', $allowed );
+		$this->assertStringStartsWith( '<img src="a.jpg" alt="">', $hostile );
+		$this->assertStringNotContainsString( 'onerror', $hostile );
+		$this->assertStringNotContainsString( '<script', $hostile );
 	}
 
 	/**

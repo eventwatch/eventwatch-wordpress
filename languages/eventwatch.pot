@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-11-19T04:32:28+00:00\n"
+"POT-Creation-Date: 2026-11-22T02:46:39+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: eventwatch\n"
@@ -33,10 +33,6 @@ msgstr ""
 #: eventwatch.php
 #: includes/class-event-patterns.php:29
 msgid "EventWatch"
-msgstr ""
-
-#: build/blocks/event-actions/render.php:24
-msgid "Event actions"
 msgstr ""
 
 #: includes/class-admin-columns.php:82
@@ -208,139 +204,143 @@ msgctxt "event end in another year"
 msgid "D, M j, Y"
 msgstr ""
 
-#: includes/class-event-detail.php:102
+#: includes/class-event-detail.php:90
 msgid "Single Event"
 msgstr ""
 
-#: includes/class-event-detail.php:103
+#: includes/class-event-detail.php:91
 msgid "Displays a single event."
 msgstr ""
 
-#: includes/class-event-detail.php:277
+#: includes/class-event-detail.php:298
+msgid "Event actions"
+msgstr ""
+
+#: includes/class-event-detail.php:325
 msgid "Organizer"
 msgstr ""
 
-#: includes/class-event-detail.php:314
+#: includes/class-event-detail.php:362
 msgid " (opens in a new tab)"
 msgstr ""
 
-#: includes/class-event-detail.php:343
+#: includes/class-event-detail.php:391
 #: build/blocks/event-field/index.js:1
 msgid "Back to events"
 msgstr ""
 
-#: includes/class-event-detail.php:379
+#: includes/class-event-detail.php:427
 #: templates/event-card.php:21
 #: templates/event-row.php:22
 msgctxt "label on an event that has ended"
 msgid "Ended"
 msgstr ""
 
-#: includes/class-event-detail.php:387
+#: includes/class-event-detail.php:435
 msgid "Date & time"
 msgstr ""
 
-#: includes/class-event-detail.php:400
+#: includes/class-event-detail.php:448
 msgid "See the description and the official page for how to join."
 msgstr ""
 
-#: includes/class-event-detail.php:408
+#: includes/class-event-detail.php:456
 msgid "Venue"
 msgstr ""
 
 #. translators: %s: the venue name or address.
-#: includes/class-event-detail.php:454
+#: includes/class-event-detail.php:502
 #, php-format
 msgid "Venue map: %s"
 msgstr ""
 
-#: includes/class-event-detail.php:460
+#: includes/class-event-detail.php:508
 msgid "Open in Google Maps"
 msgstr ""
 
-#: includes/class-event-detail.php:470
+#: includes/class-event-detail.php:518
 msgid "Open in OpenStreetMap"
 msgstr ""
 
-#: includes/class-event-detail.php:532
+#: includes/class-event-detail.php:580
 msgid "Download iCal (.ics)"
 msgstr ""
 
-#: includes/class-event-detail.php:535
+#: includes/class-event-detail.php:583
 msgid "Google Calendar"
 msgstr ""
 
-#: includes/class-event-detail.php:549
-#: includes/class-event-detail.php:550
+#: includes/class-event-detail.php:597
+#: includes/class-event-detail.php:598
 #: build/blocks/event-field/index.js:1
 msgid "Add to calendar"
 msgstr ""
 
-#: includes/class-event-detail.php:604
+#: includes/class-event-detail.php:652
 #: build/blocks/event-field/index.js:1
 msgctxt "mark an event you are interested in"
 msgid "Save"
 msgstr ""
 
-#: includes/class-event-detail.php:608
+#: includes/class-event-detail.php:656
 msgid "Get a reminder in the app"
 msgstr ""
 
-#: includes/class-event-detail.php:609
+#: includes/class-event-detail.php:657
 msgid "Close"
 msgstr ""
 
-#: includes/class-event-detail.php:611
+#: includes/class-event-detail.php:659
 msgid "Save this event in the EventWatch app, and we’ll send you a notification before it starts so you don’t forget."
 msgstr ""
 
-#: includes/class-event-detail.php:612
+#: includes/class-event-detail.php:660
 msgid "Open in app"
 msgstr ""
 
-#: includes/class-event-detail.php:614
+#: includes/class-event-detail.php:662
 msgid "Don’t have the app? Get it here."
 msgstr ""
 
-#: includes/class-event-detail.php:615
+#: includes/class-event-detail.php:663
 msgid "Get it on the App Store"
 msgstr ""
 
-#: includes/class-event-detail.php:615
+#: includes/class-event-detail.php:663
 msgid "Get it on Google Play"
 msgstr ""
 
-#: includes/class-event-detail.php:634
+#: includes/class-event-detail.php:682
 msgid "Share on X"
 msgstr ""
 
-#: includes/class-event-detail.php:644
+#: includes/class-event-detail.php:692
 msgid "Send on LINE"
 msgstr ""
 
-#: includes/class-event-detail.php:648
+#: includes/class-event-detail.php:696
 msgid "Share on Facebook"
 msgstr ""
 
-#: includes/class-event-detail.php:656
+#: includes/class-event-detail.php:704
 msgid "Copy link"
 msgstr ""
 
-#: includes/class-event-detail.php:672
+#: includes/class-event-detail.php:720
 msgid "Link copied"
 msgstr ""
 
-#: includes/class-event-detail.php:673
+#: includes/class-event-detail.php:721
 msgid "The link could not be copied."
 msgstr ""
 
-#: includes/class-event-detail.php:677
-#: includes/class-event-detail.php:678
+#: includes/class-event-detail.php:725
+#: includes/class-event-detail.php:726
 #: build/blocks/event-field/index.js:1
 msgid "Share"
 msgstr ""
 
-#: includes/class-event-detail.php:699
+#: includes/class-event-detail.php:747
 #: build/blocks/event-field/index.js:1
 msgid "Visit official page"
 msgstr ""

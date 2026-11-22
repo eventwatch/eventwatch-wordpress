@@ -467,8 +467,8 @@ class Event_Import {
 						array(
 							'post_type'    => Post_Type::POST_TYPE,
 							'post_status'  => 'draft',
-							// Sync_Payload::plain_title が実体参照を戻す。タグの形の文字を消さないため。
-							'post_title'   => esc_html( (string) $event['title'] ),
+							// タグの形の文字を実体参照で残す。送るときの Sync_Payload::plain_title は、タグを除いてから実体参照を戻すので、元の題に戻る。
+							'post_title'   => htmlspecialchars( (string) $event['title'], ENT_QUOTES, 'UTF-8', false ),
 							'post_content' => Markdown_Blocks::from_markdown( isset( $event['description'] ) ? (string) $event['description'] : '', $images['body'] ),
 							'meta_input'   => $meta,
 						)

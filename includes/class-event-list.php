@@ -579,6 +579,49 @@ class Event_List {
 	}
 
 	/**
+	 * テンプレートがアイキャッチ画像を出すときに wp_kses へ渡す、許す要素と属性。
+	 *
+	 * 投稿の許可は img の srcset・sizes・decoding・fetchpriority と picture・source・noscript を持たず、本体の画像から srcset と sizes を消す。これらを足して、本体の画像と、フィルターで picture や noscript を添えた画像をそのまま通す。
+	 *
+	 * Src の data: は本体の許可するプロトコルに無いので、渡す前に without_data_src() で外しておく。
+	 *
+	 * @return array<string, array<string, bool>>
+	 */
+	public static function image_allowed_html() {
+		$allowed = wp_kses_allowed_html( 'post' );
+		$sources = array(
+			'srcset' => true,
+			'sizes'  => true,
+			'width'  => true,
+			'height' => true,
+		);
+
+		$allowed['img']      = array_merge(
+			isset( $allowed['img'] ) ? $allowed['img'] : array(),
+			$sources,
+			array(
+				'decoding'      => true,
+				'fetchpriority' => true,
+			)
+		);
+		$allowed['picture']  = array(
+			'class' => true,
+			'id'    => true,
+			'style' => true,
+		);
+		$allowed['noscript'] = array();
+		$allowed['source']   = array_merge(
+			$sources,
+			array(
+				'type'  => true,
+				'media' => true,
+			)
+		);
+
+		return $allowed;
+	}
+
+	/**
 	 * アイキャッチ画像の HTML。無ければ空。
 	 *
 	 * @param WP_Post $post イベント。
@@ -592,14 +635,37 @@ class Event_List {
 
 		$alt = trim( (string) get_post_meta( $thumbnail_id, '_wp_attachment_image_alt', true ) );
 
-		return (string) get_the_post_thumbnail(
-			$post,
-			'medium_large',
-			array(
-				'alt'     => '' !== $alt ? $alt : wp_strip_all_tags( get_the_title( $post ) ),
-				'loading' => 'lazy',
+		return self::without_data_src(
+			(string) get_the_post_thumbnail(
+				$post,
+				'medium_large',
+				array(
+					'alt'     => '' !== $alt ? $alt : wp_strip_all_tags( get_the_title( $post ) ),
+					'loading' => 'lazy',
+				)
 			)
 		);
+	}
+
+	/**
+	 * Img の src が data: なら、src を外す。
+	 *
+	 * 遅延読み込みのフィルターは、src に data: のプレースホルダーを入れ、本物を data-src に置く。data: は本体の許可するプロトコルに無く、wp_kses は相対 URL に書き換える（SVG のプレースホルダーは外部のサイトへのプロトコル相対の URL になる）。src を外せば何も取りに行かず、差し替えは data-src から行われる。
+	 *
+	 * @param string $html 画像の HTML。
+	 * @return string
+	 */
+	public static function without_data_src( $html ) {
+		// 生の HTML の文字列では見ない。src="data&#x3A;…" のように文字参照で書いた形も、get_attribute は戻して返す。
+		$tags = new \WP_HTML_Tag_Processor( $html );
+		while ( $tags->next_tag( 'img' ) ) {
+			$src = $tags->get_attribute( 'src' );
+			if ( is_string( $src ) && 0 === stripos( ltrim( $src ), 'data:' ) ) {
+				$tags->remove_attribute( 'src' );
+			}
+		}
+
+		return $tags->get_updated_html();
 	}
 
 	/**
