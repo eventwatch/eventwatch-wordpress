@@ -151,7 +151,7 @@ class Settings {
 
 		// 管理画面の外（WP-CLI など）にはこの関数が無い。
 		if ( function_exists( 'add_settings_error' ) ) {
-			add_settings_error( self::MAPS_KEY, 'eventwatch_invalid_maps_key', __( 'The Google Maps API key can contain only letters, numbers, hyphens, and underscores.', 'eventwatch' ) );
+			add_settings_error( self::MAPS_KEY, 'eventwatch_invalid_maps_key', esc_html__( 'The Google Maps API key can contain only letters, numbers, hyphens, and underscores.', 'eventwatch' ) );
 		}
 
 		return (string) get_option( self::MAPS_KEY, '' );
@@ -178,7 +178,7 @@ class Settings {
 
 		// 管理画面の外（WP-CLI など）にはこの関数が無い。
 		if ( function_exists( 'add_settings_error' ) ) {
-			add_settings_error( Connection::KEY_OPTION, 'eventwatch_invalid_api_key', __( 'That doesn’t look like an EventWatch API key. Keys start with “ewk_” and have 47 characters. Copy the whole key and try again.', 'eventwatch' ) );
+			add_settings_error( Connection::KEY_OPTION, 'eventwatch_invalid_api_key', esc_html__( 'That doesn’t look like an EventWatch API key. Keys start with “ewk_” and have 47 characters. Copy the whole key and try again.', 'eventwatch' ) );
 		}
 
 		return $current;
@@ -190,7 +190,7 @@ class Settings {
 	 * @return void
 	 */
 	public static function add_page() {
-		add_options_page( __( 'EventWatch Settings', 'eventwatch' ), 'EventWatch', 'manage_options', self::PAGE, array( self::class, 'render_page' ) );
+		add_options_page( esc_html__( 'EventWatch Settings', 'eventwatch' ), 'EventWatch', 'manage_options', self::PAGE, array( self::class, 'render_page' ) );
 	}
 
 	/**
@@ -199,10 +199,10 @@ class Settings {
 	 * @return void
 	 */
 	public static function add_fields() {
-		add_settings_section( self::SECTION_CONNECTION, __( 'EventWatch connection', 'eventwatch' ), array( self::class, 'render_connection_section' ), self::PAGE );
+		add_settings_section( self::SECTION_CONNECTION, esc_html__( 'EventWatch connection', 'eventwatch' ), array( self::class, 'render_connection_section' ), self::PAGE );
 		add_settings_field(
 			Connection::KEY_OPTION,
-			__( 'EventWatch API key', 'eventwatch' ),
+			esc_html__( 'EventWatch API key', 'eventwatch' ),
 			array( self::class, 'render_api_key_field' ),
 			self::PAGE,
 			self::SECTION_CONNECTION,
@@ -210,17 +210,17 @@ class Settings {
 		);
 		add_settings_field(
 			'eventwatch_sync_status',
-			__( 'Sending to EventWatch', 'eventwatch' ),
+			esc_html__( 'Sending to EventWatch', 'eventwatch' ),
 			array( self::class, 'render_sync_status_field' ),
 			self::PAGE,
 			self::SECTION_CONNECTION
 		);
 
-		add_settings_section( self::SECTION_DETAIL, __( 'Event pages', 'eventwatch' ), '__return_false', self::PAGE );
+		add_settings_section( self::SECTION_DETAIL, esc_html__( 'Event pages', 'eventwatch' ), '__return_false', self::PAGE );
 
 		add_settings_field(
 			Post_Type::SLUG_OPTION,
-			__( 'URL prefix', 'eventwatch' ),
+			esc_html__( 'URL prefix', 'eventwatch' ),
 			array( self::class, 'render_slug_field' ),
 			self::PAGE,
 			self::SECTION_DETAIL,
@@ -228,7 +228,7 @@ class Settings {
 		);
 		add_settings_field(
 			self::LIST_PAGE,
-			__( 'Event list page', 'eventwatch' ),
+			esc_html__( 'Event list page', 'eventwatch' ),
 			array( self::class, 'render_list_page_field' ),
 			self::PAGE,
 			self::SECTION_DETAIL,
@@ -236,17 +236,17 @@ class Settings {
 		);
 		add_settings_field(
 			self::MAPS_KEY,
-			__( 'Google Maps API key (optional)', 'eventwatch' ),
+			esc_html__( 'Google Maps API key (optional)', 'eventwatch' ),
 			array( self::class, 'render_maps_key_field' ),
 			self::PAGE,
 			self::SECTION_DETAIL,
 			array( 'label_for' => self::MAPS_KEY )
 		);
 
-		add_settings_section( self::SECTION_REMOVAL, __( 'Removing the plugin', 'eventwatch' ), '__return_false', self::PAGE );
+		add_settings_section( self::SECTION_REMOVAL, esc_html__( 'Removing the plugin', 'eventwatch' ), '__return_false', self::PAGE );
 		add_settings_field(
 			self::DELETE_EVENTS,
-			__( 'Events', 'eventwatch' ),
+			esc_html__( 'Events', 'eventwatch' ),
 			array( self::class, 'render_delete_events_field' ),
 			self::PAGE,
 			self::SECTION_REMOVAL

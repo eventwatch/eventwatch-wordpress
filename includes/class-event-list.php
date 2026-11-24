@@ -570,8 +570,8 @@ class Event_List {
 				'total'        => $total,
 				'type'         => 'plain',
 				'add_fragment' => '#' . $anchor,
-				'prev_text'    => __( 'Previous', 'eventwatch' ),
-				'next_text'    => __( 'Next', 'eventwatch' ),
+				'prev_text'    => esc_html__( 'Previous', 'eventwatch' ),
+				'next_text'    => esc_html__( 'Next', 'eventwatch' ),
 			)
 		);
 

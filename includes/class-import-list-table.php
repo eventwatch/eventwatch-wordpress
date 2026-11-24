@@ -58,10 +58,10 @@ class Import_List_Table extends WP_List_Table {
 	public function get_columns() {
 		return array(
 			'cb'        => '<input type="checkbox" />',
-			'title'     => __( 'Event name', 'eventwatch' ),
-			'date'      => __( 'Event date', 'eventwatch' ),
-			'timing'    => __( 'Timing', 'eventwatch' ),
-			'state'     => __( 'EventWatch status', 'eventwatch' ),
+			'title'     => esc_html__( 'Event name', 'eventwatch' ),
+			'date'      => esc_html__( 'Event date', 'eventwatch' ),
+			'timing'    => esc_html__( 'Timing', 'eventwatch' ),
+			'state'     => esc_html__( 'EventWatch status', 'eventwatch' ),
 			'wordpress' => 'WordPress',
 		);
 	}
