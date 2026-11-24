@@ -55,21 +55,21 @@ class Post_Type {
 			self::POST_TYPE,
 			array(
 				'labels'          => array(
-					'name'                   => __( 'Events', 'eventwatch' ),
-					'singular_name'          => __( 'Event', 'eventwatch' ),
-					'add_new_item'           => __( 'Add New Event', 'eventwatch' ),
-					'edit_item'              => __( 'Edit Event', 'eventwatch' ),
-					'new_item'               => __( 'New Event', 'eventwatch' ),
-					'view_item'              => __( 'View Event', 'eventwatch' ),
-					'view_items'             => __( 'View Events', 'eventwatch' ),
-					'search_items'           => __( 'Search Events', 'eventwatch' ),
-					'not_found'              => __( 'No events found.', 'eventwatch' ),
-					'not_found_in_trash'     => __( 'No events found in Trash.', 'eventwatch' ),
-					'all_items'              => __( 'All Events', 'eventwatch' ),
-					'item_published'         => __( 'Event published.', 'eventwatch' ),
-					'item_scheduled'         => __( 'Event scheduled.', 'eventwatch' ),
-					'item_updated'           => __( 'Event updated.', 'eventwatch' ),
-					'item_reverted_to_draft' => __( 'Event reverted to draft.', 'eventwatch' ),
+					'name'                   => esc_html__( 'Events', 'eventwatch' ),
+					'singular_name'          => esc_html__( 'Event', 'eventwatch' ),
+					'add_new_item'           => esc_html__( 'Add New Event', 'eventwatch' ),
+					'edit_item'              => esc_html__( 'Edit Event', 'eventwatch' ),
+					'new_item'               => esc_html__( 'New Event', 'eventwatch' ),
+					'view_item'              => esc_html__( 'View Event', 'eventwatch' ),
+					'view_items'             => esc_html__( 'View Events', 'eventwatch' ),
+					'search_items'           => esc_html__( 'Search Events', 'eventwatch' ),
+					'not_found'              => esc_html__( 'No events found.', 'eventwatch' ),
+					'not_found_in_trash'     => esc_html__( 'No events found in Trash.', 'eventwatch' ),
+					'all_items'              => esc_html__( 'All Events', 'eventwatch' ),
+					'item_published'         => esc_html__( 'Event published.', 'eventwatch' ),
+					'item_scheduled'         => esc_html__( 'Event scheduled.', 'eventwatch' ),
+					'item_updated'           => esc_html__( 'Event updated.', 'eventwatch' ),
+					'item_reverted_to_draft' => esc_html__( 'Event reverted to draft.', 'eventwatch' ),
 				),
 				'public'          => true,
 				'show_in_rest'    => true,
@@ -109,8 +109,8 @@ class Post_Type {
 				array(
 					'hierarchical' => true,
 					'labels'       => array(
-						'name'          => __( 'Event Categories', 'eventwatch' ),
-						'singular_name' => __( 'Event Category', 'eventwatch' ),
+						'name'          => esc_html__( 'Event Categories', 'eventwatch' ),
+						'singular_name' => esc_html__( 'Event Category', 'eventwatch' ),
 					),
 				)
 			)
@@ -124,8 +124,8 @@ class Post_Type {
 				array(
 					'hierarchical' => false,
 					'labels'       => array(
-						'name'          => __( 'Event Tags', 'eventwatch' ),
-						'singular_name' => __( 'Event Tag', 'eventwatch' ),
+						'name'          => esc_html__( 'Event Tags', 'eventwatch' ),
+						'singular_name' => esc_html__( 'Event Tag', 'eventwatch' ),
 					),
 				)
 			)

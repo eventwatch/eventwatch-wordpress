@@ -152,7 +152,32 @@ class Escaped_Translations_Test extends WP_UnitTestCase {
 	}
 
 	/**
-	 * 一覧・過去・検索のブロックとショートコード。2 ページ以上にして、ページ送りを出す。
+	 * 1 ページ目と 2 ページ目を描き、前へ・次へのリンクの文がエスケープされていることを見る。
+	 *
+	 * 前へのリンクは 2 ページ目からしか出ないので、1 ページ目だけでは prev_text を確かめられない。
+	 *
+	 * @param string   $label  失敗のときに出す名前。
+	 * @param callable $render 描く処理。
+	 * @return void
+	 */
+	private function assert_pagination_escaped( $label, callable $render ) {
+		$first = $render();
+		$this->assert_escaped( $first );
+		$this->assertSame( 1, preg_match( '/([a-z0-9_]+)=2#/', $first, $param ), $label . ' の 2 ページ目へのリンクが無い。' );
+
+		$_GET[ $param[1] ] = '2';
+		$second            = $render();
+		unset( $_GET[ $param[1] ] );
+
+		$this->assert_escaped( $second );
+		foreach ( array( 'prev', 'next' ) as $rel ) {
+			$this->assertSame( 1, preg_match( '#class="' . $rel . ' page-numbers"[^>]*>(.*?)</a>#s', $second, $link ), $label . ' の ' . $rel . ' のリンクが無い。' );
+			$this->assertStringContainsString( self::ESCAPED, $link[1], $label . ' の ' . $rel . ' の文' );
+		}
+	}
+
+	/**
+	 * 一覧・過去・検索のブロックとショートコード。3 ページにして、2 ページ目の前へ・次への両方を出す。
 	 */
 	public function test_list_blocks_and_shortcodes() {
 		foreach ( array( 1, 2, 3, -1, -2, -3 ) as $days ) {
@@ -160,16 +185,22 @@ class Escaped_Translations_Test extends WP_UnitTestCase {
 		}
 
 		foreach ( array( Event_List_Block::NAME, Past_Events_Block::NAME, Event_Search_Block::NAME ) as $name ) {
-			$html = $this->block( $name, array( 'perPage' => 1 ) );
-			$this->assertStringContainsString( 'page-numbers', $html, $name . ' のページ送りが出ていない。' );
-			$this->assert_escaped( $html );
+			$this->assert_pagination_escaped(
+				$name,
+				function () use ( $name ) {
+					return $this->block( $name, array( 'perPage' => 1 ) );
+				}
+			);
 		}
 
 		foreach ( array( Event_List_Block::SHORTCODE, Past_Events_Block::SHORTCODE, Event_Search_Block::SHORTCODE ) as $shortcode ) {
-			Event_List::reset_rendered();
-			$html = do_shortcode( '[' . $shortcode . ' per_page="1"]' );
-			$this->assertStringContainsString( 'page-numbers', $html, $shortcode . ' のページ送りが出ていない。' );
-			$this->assert_escaped( $html );
+			$this->assert_pagination_escaped(
+				$shortcode,
+				static function () use ( $shortcode ) {
+					Event_List::reset_rendered();
+					return do_shortcode( '[' . $shortcode . ' per_page="1"]' );
+				}
+			);
 		}
 	}
 
@@ -191,6 +222,9 @@ class Escaped_Translations_Test extends WP_UnitTestCase {
 		Site_Identity::use_as_moved();
 		update_option( Connection::KEY_OPTION, 'ewk_0123456789012345678901234567890123456789012' );
 
+		// 固定ページが無いと、一覧のページの欄は select ごと出ない。
+		self::factory()->post->create( array( 'post_type' => 'page' ) );
+
 		Settings::add_fields();
 		$sections = $this->output_of(
 			static function () {
@@ -199,16 +233,47 @@ class Escaped_Translations_Test extends WP_UnitTestCase {
 		);
 		$this->assert_escaped( $sections );
 
+		// 節の見出し 3 つと欄の見出し 6 つ。どれか 1 つが生のままでも、ここで分かる。
+		preg_match_all( '#<(h2|th)\b[^>]*>(.*?)</\1>#s', $sections, $headings, PREG_SET_ORDER );
+		$this->assertCount( 9, $headings );
+		foreach ( $headings as $heading ) {
+			$this->assertStringContainsString( self::ESCAPED, $heading[2] );
+		}
+		$this->assertSame( 1, preg_match( '#<option[^>]*value="0"[^>]*>(.*?)</option>#s', $sections, $none ) );
+		$this->assertStringContainsString( self::ESCAPED, $none[1] );
+
+		// 誤りの文は 5 つ。URL の接頭辞は、形・予約語・年と月のアーカイブとの重なりの 3 通り。
 		Settings::sanitize_maps_key( 'not a key!' );
 		Settings::sanitize_api_key( 'not-a-key' );
 		Event_Permalink::sanitize_slug( 'Not A Slug' );
+		Event_Permalink::sanitize_slug( 'wp-admin' );
+		Event_Permalink::sanitize_slug( '2024' );
 		$notices = $this->output_of(
 			static function () {
 				settings_errors();
 			}
 		);
-		$this->assertSame( 3, substr_count( $notices, self::ESCAPED ) );
+		$this->assertSame( 5, substr_count( $notices, self::ESCAPED ) );
 		$this->assertStringNotContainsString( self::RAW, $notices );
+	}
+
+	/**
+	 * 投稿タイプとタクソノミーのラベル。本体がメニュー・管理バー・列の見出しへ生のまま入れる。
+	 */
+	public function test_post_type_labels() {
+		Post_Type::register();
+
+		$labels = (array) get_post_type_object( Post_Type::POST_TYPE )->labels;
+		foreach ( array( 'singular_name', 'add_new_item', 'edit_item', 'view_item', 'view_items', 'all_items', 'name_admin_bar' ) as $key ) {
+			$this->assertStringContainsString( self::ESCAPED, $labels[ $key ], $key );
+		}
+		foreach ( array( Post_Type::TAX_CATEGORY, Post_Type::TAX_TAG ) as $taxonomy ) {
+			$labels = array_merge( $labels, (array) get_taxonomy( $taxonomy )->labels );
+			$this->assertStringContainsString( self::ESCAPED, get_taxonomy( $taxonomy )->labels->name, $taxonomy );
+		}
+		foreach ( $labels as $key => $label ) {
+			$this->assertStringNotContainsString( self::RAW, (string) $label, $key );
+		}
 	}
 
 	/**
