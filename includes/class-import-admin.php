@@ -55,8 +55,8 @@ class Import_Admin {
 
 		add_submenu_page(
 			'edit.php?post_type=' . Post_Type::POST_TYPE,
-			__( 'Import from EventWatch', 'eventwatch' ),
-			__( 'Import from EventWatch', 'eventwatch' ),
+			esc_html__( 'Import from EventWatch', 'eventwatch' ),
+			esc_html__( 'Import from EventWatch', 'eventwatch' ),
 			self::CAPABILITY,
 			self::PAGE,
 			array( self::class, 'render_page' )

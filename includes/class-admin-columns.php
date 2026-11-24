@@ -79,8 +79,8 @@ class Admin_Columns {
 		foreach ( $columns as $key => $label ) {
 			$result[ $key ] = $label;
 			if ( 'title' === $key ) {
-				$result[ self::COLUMN_DATE ]       = __( 'Event date', 'eventwatch' );
-				$result[ self::COLUMN_PREFECTURE ] = __( 'Prefecture', 'eventwatch' );
+				$result[ self::COLUMN_DATE ]       = esc_html__( 'Event date', 'eventwatch' );
+				$result[ self::COLUMN_PREFECTURE ] = esc_html__( 'Prefecture', 'eventwatch' );
 				// キーなしのサイトでは騒がない。
 				if ( '' !== Connection::api_key() ) {
 					$result[ self::COLUMN_SYNC ] = 'EventWatch';

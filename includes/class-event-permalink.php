@@ -81,11 +81,11 @@ class Event_Permalink {
 
 		$error = null;
 		if ( ! preg_match( '/^[a-z0-9]+(?:-[a-z0-9]+)*$/', $slug ) ) {
-			$error = __( 'Use only lowercase letters, numbers, and hyphens for the URL prefix.', 'eventwatch' );
+			$error = esc_html__( 'Use only lowercase letters, numbers, and hyphens for the URL prefix.', 'eventwatch' );
 		} elseif ( in_array( $slug, self::RESERVED, true ) ) {
-			$error = __( 'WordPress uses this word in its own URLs. Choose another URL prefix.', 'eventwatch' );
+			$error = esc_html__( 'WordPress uses this word in its own URLs. Choose another URL prefix.', 'eventwatch' );
 		} elseif ( self::takes_over_urls( $slug ) ) {
-			$error = __( 'Pages or posts on your site already use this URL. Choose another URL prefix.', 'eventwatch' );
+			$error = esc_html__( 'Pages or posts on your site already use this URL. Choose another URL prefix.', 'eventwatch' );
 		}
 
 		if ( null === $error ) {
