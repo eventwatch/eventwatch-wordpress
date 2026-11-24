@@ -40,5 +40,5 @@ PHP と Composer は wp-env のコンテナの中で動かす。先に `npm run 
 - 取り込みは `Event_Import` を通す。保存で印を積ませないときは `Sync_Queue::without_marking()` の中で書き、送った内容の覚えは `Sync_Queue::record_linked()` の 1 か所で入れる。本文を送る変換（`Markdown_Converter`）に記法を足すときは、取り込む変換（`Markdown_Blocks`）と往復のテストも足す
 - 開発では定数 `EVENTWATCH_API_URL` で API の URL を変えられる。wp-env では `WP_HOME` が固定なので、URL の変化は `eventwatch_site_url_hex` に別の URL の 16 進を書いて確かめる（`Site_Identity::encode_url()`）
 - コードのコメントは日本語、画面の文言は英語を原文にする
-- 画面に出る文は、返す・本体の関数へ渡す前にエスケープする（`esc_html__` など）。`paginate_links` の `prev_text`・`add_settings_error`・設定の節と欄の見出し・列の見出し・メニューの名前・投稿タイプとタクソノミーのラベル（サブメニューと管理バー）は、本体が生のまま HTML へ入れる。PHPCS と Plugin Check は自分のコードの `echo` しか見ないので、`tests/phpunit/escaped-translations-test.php` が訳文に目印のタグを付けて出力を確かめる。訳文を出す画面を足したら、このテストにも足す
+- 画面に出る文は、返す・本体の関数へ渡す前にエスケープする（`esc_html__` など）。`paginate_links` の `prev_text`・`add_settings_error`・設定の節と欄の見出し・列の見出し・メニューの名前は、本体が生のまま HTML へ入れる。投稿タイプとタクソノミーのラベルだけは `__()` のまま渡す（本体は同じラベルをブロックエディターで文字として出すので、エスケープすると訳文の `'` などが実体参照のまま見える。本体の投稿タイプと同じ扱い）。PHPCS と Plugin Check は自分のコードの `echo` しか見ないので、`tests/phpunit/escaped-translations-test.php` が訳文に目印のタグを付けて出力を確かめる。訳文を出す画面を足したら、このテストにも足す
 - wp-env のポートは 8885 / 8886。8888 は EventWatch の API サーバーが使う

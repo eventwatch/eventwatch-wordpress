@@ -29,6 +29,10 @@ use WP_UnitTestCase;
  * PHPCS の EscapeOutput は自分のコードの echo の引数しか見ない。描画の返り値や、本体の関数へ渡して本体が生のまま出す値
  * （paginate_links の prev_text、add_settings_error の文、設定の節と欄の見出し、列の見出し、メニューの名前）は見えないので、
  * 本体を通った後の出力で確かめる。
+ *
+ * 投稿タイプとタクソノミーのラベルは対象の外。本体は同じラベルを、管理バーとサブメニューでは生の HTML に入れ、
+ * ブロックエディターでは REST から文字として出す。エスケープすると、アポストロフィなどを含む訳文がエディターで実体参照のまま見えるので、
+ * 本体の投稿タイプと同じく __() のまま渡す。
  */
 class Escaped_Translations_Test extends WP_UnitTestCase {
 
@@ -255,25 +259,6 @@ class Escaped_Translations_Test extends WP_UnitTestCase {
 		);
 		$this->assertSame( 5, substr_count( $notices, self::ESCAPED ) );
 		$this->assertStringNotContainsString( self::RAW, $notices );
-	}
-
-	/**
-	 * 投稿タイプとタクソノミーのラベル。本体がメニュー・管理バー・列の見出しへ生のまま入れる。
-	 */
-	public function test_post_type_labels() {
-		Post_Type::register();
-
-		$labels = (array) get_post_type_object( Post_Type::POST_TYPE )->labels;
-		foreach ( array( 'singular_name', 'add_new_item', 'edit_item', 'view_item', 'view_items', 'all_items', 'name_admin_bar' ) as $key ) {
-			$this->assertStringContainsString( self::ESCAPED, $labels[ $key ], $key );
-		}
-		foreach ( array( Post_Type::TAX_CATEGORY, Post_Type::TAX_TAG ) as $taxonomy ) {
-			$labels = array_merge( $labels, (array) get_taxonomy( $taxonomy )->labels );
-			$this->assertStringContainsString( self::ESCAPED, get_taxonomy( $taxonomy )->labels->name, $taxonomy );
-		}
-		foreach ( $labels as $key => $label ) {
-			$this->assertStringNotContainsString( self::RAW, (string) $label, $key );
-		}
 	}
 
 	/**
